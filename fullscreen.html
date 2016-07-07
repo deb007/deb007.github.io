@@ -1,0 +1,62 @@
+<script>
+function requestFullScreen(element) {
+
+    // Supports most browsers and their versions.
+    var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullscreen;
+
+    if (requestMethod) { // Native full screen.
+        requestMethod.call(element);
+    } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+		alert("IE");
+        var wscript = new ActiveXObject("WScript.Shell");
+        if (wscript !== null) {
+            wscript.SendKeys("{F11}");
+        }
+    }
+}
+function toggleFullScreen(elem) {
+		alert(elem.msRequestFullscreen);
+    // ## The below if statement seems to work better ## if ((document.fullScreenElement && document.fullScreenElement !== null) || (document.msfullscreenElement && document.msfullscreenElement !== null) || (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+    if ((document.fullScreenElement !== undefined && document.fullScreenElement === null) || (document.msFullscreenElement !== undefined && document.msFullscreenElement === null) || (document.mozFullScreen !== undefined && !document.mozFullScreen) || (document.webkitIsFullScreen !== undefined && !document.webkitIsFullScreen)) {
+        if (elem.requestFullScreen) {
+		alert('1');
+            elem.requestFullScreen();
+        } else if (elem.mozRequestFullScreen) {
+		alert('2');
+            elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullScreen) {
+		alert('3');
+            elem.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+        } else if (elem.msRequestFullscreen) {
+		alert(elem.msRequestFullscreen);
+		alert('4');
+            elem.msRequestFullscreen();
+        }
+    } else {
+        if (document.cancelFullScreen) {
+            document.cancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+    }
+}
+
+function clicked() {
+	var divfull = document.getElementById('div_fs');
+	requestFullScreen(divfull);
+	//toggleFullScreen(divfull);		// This does not support older IE versions
+}
+</script>
+
+<h1>Full screen Test</h1>
+<div id="div_fs" style="color:#000; background:#FFF;">
+Click below button<br>
+abcd<br>
+xyz<br>
+fdsfsd
+</div>
+<button onclick="clicked()">Go Fullscreen</button>
