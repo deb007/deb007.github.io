@@ -59,9 +59,11 @@ function capitalize(s) {
  
 function startDictation(event) {
   if (recognizing) {
+   alert('recognizing');
     recognition.stop();
     return;
   }
+ alert('done');
   final_transcript = '';
   recognition.lang = 'en-US';
   recognition.start();
