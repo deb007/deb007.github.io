@@ -1,0 +1,21 @@
+<input type='text' id='t1' value='Type your text here...'>
+<button id='b1' value='Click here'>Click here</button>
+
+ <script>
+ $(document).ready(function() {
+ 
+  $("#b1").on('click', function(e) {
+          // e.preventDefault();
+          var u1 = new SpeechSynthesisUtterance('You have reached your destination');
+          u1.lang = 'en-US';
+          u1.pitch = 1;
+          u1.rate = 1;
+          u1.voice = voices[10];
+          u1.voiceURI = 'native';
+          u1.volume = 1;
+          speechSynthesis.speak(u1);
+          console.log("Voice " + u1.voice.name);
+
+        });
+ 
+</script>
