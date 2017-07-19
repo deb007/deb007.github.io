@@ -1,20 +1,27 @@
 <html>
-<head><title>My First Watson VA playground</title></head>
-
+<head>
+	<title>My First Watson VA playground</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+	<style>
+	  html, body, iframe { width: 100%; height:100%; padding:0; margin:0; }
+	  #ibm_chat_root { position:fixed; bottom:0; right: 20px; height: 80%; min-height:400px; width:300px; background:#000; }
+	</style>
+</head>
 <body>
+	<div id="ibm_chat_root"></div>
+	<iframe style="width:100%; height:100%" src="http://www.google.com"></iframe>
 
-<div id="ibm-chat-root"></div>
-
-<script src='https://unpkg.com/@watson-virtual-agent/chat-widget/dist/chat.min.js'/>
-<script>
-  IBMChat.init({
-    el: 'ibm_chat_root',
-    baseURL: 'https://api.ibm.com/virtualagent/run/api/v1',
-    botID: 'ad3858be-3d22-4b17-9dd3-47bce5d1d019',
-    XIBMClientID: 'd050b261-c495-44b7-b6db-a666f7ada490',
-    XIBMClientSecret: 'I5jW7oO2gN5dC5iR3wS8cE4eA5lT0uT1mB7gX8vQ6oP4mB2cR8'
-  });
-</script>
+	<script src="https://unpkg.com/@watson-virtual-agent/chat-widget/dist/chat.min.js"/>
+	<script type="text/javascript">
+	  IBMChat.init({
+		el: 'ibm_chat_root',
+		baseURL: 'https://api.ibm.com/virtualagent/run/api/v1',
+		botID: 'ad3858be-3d22-4b17-9dd3-47bce5d1d019',
+		XIBMClientID: 'd050b261-c495-44b7-b6db-a666f7ada490',
+		XIBMClientSecret: 'I5jW7oO2gN5dC5iR3wS8cE4eA5lT0uT1mB7gX8vQ6oP4mB2cR8'
+	  });
+	</script>
 </body>
 </html>
 
