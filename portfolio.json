@@ -1,0 +1,542 @@
+{
+  "lastUpdated": "2026-05-01T09:43:50.232637+00:00",
+  "repos": [
+    {
+      "id": "deb007/ai_weather_report",
+      "name": "ai_weather_report",
+      "slug": "ai-weather-report",
+      "description": "An AI-powered weather reporting tool that fetches weather data and generates human-readable summaries using large language models.",
+      "status": "active",
+      "techStack": [
+        "Python"
+      ],
+      "category": "genai",
+      "tags": [
+        "llm",
+        "weather",
+        "cli"
+      ],
+      "links": {
+        "github": "https://github.com/deb007/ai_weather_report"
+      },
+      "metrics": {
+        "starsCount": 0,
+        "customMetrics": []
+      },
+      "timeline": {
+        "startDate": "2024-08-14",
+        "endDate": null,
+        "lastCommit": "2025-01-14T03:52:24+00:00"
+      },
+      "_githubMeta": {
+        "fullName": "deb007/ai_weather_report",
+        "defaultBranch": "main",
+        "language": "Python",
+        "fork": false,
+        "private": false,
+        "syncedAt": "2026-05-01T09:43:50.229117+00:00"
+      },
+      "featured": false,
+      "displayOrder": null,
+      "longDescription": "AI Weather Report is a Python-based project that transforms structured weather data into natural language summaries using AI techniques, making forecasts more accessible and user-friendly. Instead of presenting raw numerical values like temperature, humidity, and wind speed, it focuses on generating readable reports in the tone of popular global weather news readers. Overall, it showcases a practical application of AI in enhancing everyday data interpretation and user experience.",
+      "highlights": [
+        "Weather reports generated in the style of popular global weather news readers",
+        "Transforms structured weather data into natural language summaries",
+        "Demonstrates practical AI application for data interpretation"
+      ],
+      "media": {
+        "thumbnail": "",
+        "screenshots": [],
+        "demoGif": ""
+      },
+      "visibility": {
+        "showOnPortfolio": true,
+        "showSourceLink": true,
+        "showMetrics": false
+      }
+    },
+    {
+      "id": "deb007/athena",
+      "name": "athena",
+      "slug": "athena",
+      "description": "A self-hosted MCP gateway that connects AI assistants like Claude and GitHub Copilot to a suite of homelab services — inventory, finances, notes, documents, tasks, photos, and web search — through a single unified server.",
+      "status": "active",
+      "techStack": [
+        "Python"
+      ],
+      "category": "tooling",
+      "tags": [
+        "mcp",
+        "homelab",
+        "automation"
+      ],
+      "links": {
+        "github": "https://github.com/deb007/athena"
+      },
+      "metrics": {
+        "starsCount": 0,
+        "customMetrics": []
+      },
+      "timeline": {
+        "startDate": "2026-02-23",
+        "endDate": null,
+        "lastCommit": "2026-04-29T03:37:13+00:00"
+      },
+      "_githubMeta": {
+        "fullName": "deb007/athena",
+        "defaultBranch": "master",
+        "language": "Python",
+        "fork": false,
+        "private": true,
+        "syncedAt": "2026-05-01T09:43:50.226475+00:00"
+      },
+      "featured": true,
+      "displayOrder": null,
+      "longDescription": "Athena is a Model Context Protocol (MCP) server built with FastMCP and Python that acts as a unified gateway between AI assistants and a personal homelab stack. It exposes seven self-hosted services — Homebox, Firefly III, Blinko, Paperless-ngx, TickTick, Immich, and Tavily — as natural-language tools, letting any MCP-compatible client query inventory, log transactions, manage documents, and create tasks without ever leaving a chat interface. The server handles authentication concerns automatically, including silent OAuth2 token refresh for TickTick and session-based login for Homebox, and ships with a health-check tool that reports the reachability of every connected service. It is deployable as a standalone Python process or as a Docker container via the included Compose configuration, and is designed to be extended — adding a new service integration requires roughly ten lines of Python. Athena also integrates with n8n for workflow automation and includes a Telegram bot command sync script, making it a complete hub for AI-driven homelab management.",
+      "highlights": [
+        "Connects AI assistants to a suite of homelab services through a single unified server",
+        "Automatic authentication handling for multiple services",
+        "Designed for extensibility with minimal code required to add new service integrations"
+      ],
+      "media": {
+        "thumbnail": "",
+        "screenshots": [],
+        "demoGif": ""
+      },
+      "visibility": {
+        "showOnPortfolio": true,
+        "showSourceLink": false,
+        "showMetrics": true
+      }
+    },
+    {
+      "id": "deb007/emenef",
+      "name": "emenef",
+      "slug": "emenef",
+      "description": "An intelligent task management app that learns from your behavioral patterns to predict and remind you of recurring tasks — so you never have to remember when you last got a haircut, changed the filter, or bought more vitamins.",
+      "status": "active",
+      "techStack": [
+        "Node.js",
+        "PostgreSQL"
+      ],
+      "category": "backend",
+      "tags": [
+        "productivity",
+        "react-native",
+        "postgresql"
+      ],
+      "links": {
+        "github": "https://github.com/deb007/emenef"
+      },
+      "metrics": {
+        "starsCount": 0,
+        "customMetrics": []
+      },
+      "timeline": {
+        "startDate": "2024-05-29",
+        "endDate": null,
+        "lastCommit": "2026-04-22T03:18:01+00:00"
+      },
+      "_githubMeta": {
+        "fullName": "deb007/emenef",
+        "defaultBranch": "main",
+        "language": "EJS",
+        "fork": false,
+        "private": true,
+        "syncedAt": "2026-05-01T09:43:50.226671+00:00"
+      },
+      "featured": true,
+      "displayOrder": null,
+      "longDescription": "This app takes the mental effort out of managing recurring tasks by learning from the patterns in your own behavior. Users log activities in a simple verb-plus-task format, and the app calculates the average interval between completions to forecast when each task is due next. A daily dashboard surfaces overdue and upcoming tasks, while a push notification and email system delivers reminders so nothing slips through the cracks. Built with Node.js, Express, Sequelize ORM, and PostgreSQL on Supabase, the backend exposes both a session-authenticated internal API and a public REST API secured with API keys. The companion React Native mobile app, built with Expo, brings the same forecasting and logging experience to iOS and Android with a clean, native interface.",
+      "highlights": [
+        "Learns behavioral patterns to forecast when recurring tasks are due",
+        "Push notification and email reminder system",
+        "React Native mobile app for iOS and Android"
+      ],
+      "media": {
+        "thumbnail": "",
+        "screenshots": [],
+        "demoGif": ""
+      },
+      "visibility": {
+        "showOnPortfolio": true,
+        "showSourceLink": false,
+        "showMetrics": false
+      }
+    },
+    {
+      "id": "deb007/flashcards",
+      "name": "flashcards",
+      "slug": "flashcards",
+      "description": "A flashcard management system designed for creating, organizing, and administering digital flashcards, supporting both public and admin interfaces.",
+      "status": "active",
+      "techStack": [
+        "Python"
+      ],
+      "category": "personal",
+      "tags": [
+        "education",
+        "web-app",
+        "admin"
+      ],
+      "links": {
+        "github": "https://github.com/deb007/flashcards"
+      },
+      "metrics": {
+        "starsCount": 0,
+        "customMetrics": []
+      },
+      "timeline": {
+        "startDate": "2025-07-16",
+        "endDate": null,
+        "lastCommit": "2025-12-22T08:33:08+00:00"
+      },
+      "_githubMeta": {
+        "fullName": "deb007/flashcards",
+        "defaultBranch": "master",
+        "language": "Python",
+        "fork": false,
+        "private": true,
+        "syncedAt": "2026-05-01T09:43:50.227343+00:00"
+      },
+      "featured": false,
+      "displayOrder": null,
+      "longDescription": "This repository implements a robust flashcard management application, enabling users to generate, categorize, and review flashcards through a user-friendly web interface. The system features both public and administrative sections, allowing for flexible flashcard type management and content seeding. It leverages a modular architecture with clear separation between core logic, data handling, and presentation layers. The project includes database migration scripts, configuration utilities, and a customizable UI, making it suitable for educational or training purposes. Designed for extensibility, it supports enhanced flashcard types and streamlined workflows for both end-users and administrators.",
+      "highlights": [
+        "Public and admin interfaces for flexible content management",
+        "Enhanced flashcard types with content seeding",
+        "Database migration scripts and modular architecture"
+      ],
+      "media": {
+        "thumbnail": "",
+        "screenshots": [],
+        "demoGif": ""
+      },
+      "visibility": {
+        "showOnPortfolio": true,
+        "showSourceLink": true,
+        "showMetrics": false
+      }
+    },
+    {
+      "id": "deb007/gptdbinfo",
+      "name": "gptdbinfo",
+      "slug": "gptdbinfo",
+      "description": "GPTDBInfo is a utility-focused project that uses large language models to intelligently analyze database schemas and generate human-readable insights, enabling developers to better understand and interact with their data systems.",
+      "status": "active",
+      "techStack": [
+        "Python"
+      ],
+      "category": "genai",
+      "tags": [
+        "llm",
+        "database",
+        "developer-tools"
+      ],
+      "links": {
+        "github": "https://github.com/deb007/gptdbinfo"
+      },
+      "metrics": {
+        "starsCount": 0,
+        "customMetrics": []
+      },
+      "timeline": {
+        "startDate": "2024-10-25",
+        "endDate": null,
+        "lastCommit": "2024-10-25T11:01:55+00:00"
+      },
+      "_githubMeta": {
+        "fullName": "deb007/gptdbinfo",
+        "defaultBranch": "master",
+        "language": "Python",
+        "fork": false,
+        "private": true,
+        "syncedAt": "2026-05-01T09:43:50.229487+00:00"
+      },
+      "featured": false,
+      "displayOrder": null,
+      "longDescription": "GPTDBInfo is a Python-based tool designed to bridge the gap between complex database structures and intuitive understanding by leveraging the power of LLMs. It analyzes database metadata such as tables, columns, and relationships, and converts them into clear, descriptive summaries that are easy to interpret. The project is particularly useful for developers working with unfamiliar databases, as it reduces the need for manual exploration and documentation. It can serve as a foundation for building AI-powered data assistants, schema exploration tools, or automated documentation systems. Overall, GPTDBInfo demonstrates how generative AI can simplify database comprehension and improve developer productivity.",
+      "highlights": [
+        "Analyzes schemas, tables, and relationships with LLMs",
+        "Generates human-readable database summaries",
+        "Foundation for AI-powered data assistants and auto-documentation"
+      ],
+      "media": {
+        "thumbnail": "",
+        "screenshots": [],
+        "demoGif": ""
+      },
+      "visibility": {
+        "showOnPortfolio": true,
+        "showSourceLink": false,
+        "showMetrics": false
+      }
+    },
+    {
+      "id": "deb007/grayipos",
+      "name": "grayipos",
+      "slug": "grayipos",
+      "description": "Terminal based tool built with Python to fetch and display the gray market prices of Indian IPOs. It also sends daily notifications about the price changes of the IPOs using Github Actions.",
+      "status": "wip",
+      "techStack": [
+        "Python"
+      ],
+      "category": "tooling",
+      "tags": [
+        "finance",
+        "web-scraping",
+        "github-actions"
+      ],
+      "links": {
+        "github": "https://github.com/deb007/grayipos"
+      },
+      "metrics": {
+        "starsCount": 0,
+        "customMetrics": []
+      },
+      "timeline": {
+        "startDate": "2024-09-16",
+        "endDate": null,
+        "lastCommit": "2025-08-15T08:15:16+00:00"
+      },
+      "_githubMeta": {
+        "fullName": "deb007/grayipos",
+        "defaultBranch": "main",
+        "language": "Python",
+        "fork": false,
+        "private": true,
+        "syncedAt": "2026-05-01T09:43:50.228536+00:00"
+      },
+      "featured": false,
+      "displayOrder": null,
+      "longDescription": "This python project is designed to provide investors with real-time insights into the performance of IPOs in the gray market, helping them make informed decisions. The tool scrapes data from relevant financial website, processes it using LLMs, and presents it in a user-friendly format in the terminal. Additionally, it utilizes GitHub Actions to automate daily updates and notifications, ensuring users stay informed about market trends without needing to manually check for updates.",
+      "highlights": [
+        "Real-time IPO gray market price scraping",
+        "LLM-powered data processing and formatting",
+        "Automated daily notifications via GitHub Actions"
+      ],
+      "media": {
+        "thumbnail": "",
+        "screenshots": [],
+        "demoGif": ""
+      },
+      "visibility": {
+        "showOnPortfolio": true,
+        "showSourceLink": false,
+        "showMetrics": true
+      }
+    },
+    {
+      "id": "deb007/imagegen",
+      "name": "imagegen",
+      "slug": "imagegen",
+      "description": "A FastAPI web application for generating images using different AI models, featuring user authentication, prompt management, and a modern HTML interface with Jinja2 templates.",
+      "status": "active",
+      "techStack": [
+        "Python"
+      ],
+      "category": "genai",
+      "tags": [
+        "image-generation",
+        "fastapi",
+        "azure-openai"
+      ],
+      "links": {
+        "github": "https://github.com/deb007/imagegen"
+      },
+      "metrics": {
+        "starsCount": 1,
+        "customMetrics": []
+      },
+      "timeline": {
+        "startDate": "2025-06-28",
+        "endDate": null,
+        "lastCommit": "2025-11-24T05:32:22+00:00"
+      },
+      "_githubMeta": {
+        "fullName": "deb007/imagegen",
+        "defaultBranch": "master",
+        "language": "Python",
+        "fork": false,
+        "private": true,
+        "syncedAt": "2026-05-01T09:43:50.227529+00:00"
+      },
+      "featured": false,
+      "displayOrder": null,
+      "longDescription": "This project is a Python FastAPI application designed to generate images from user prompts using advanced AI models, including Azure OpenAI and Gemini. It provides a secure authentication system, user management, and a flexible prompt extraction service. The frontend uses Jinja2 templating for dynamic HTML pages and organizes static assets for a clean, responsive user experience. The application structure follows best practices for maintainability, with modular routers, services, and schemas. It is suitable for both personal creative projects and as a foundation for more complex AI-powered web applications.",
+      "highlights": [
+        "Supports Azure OpenAI and Gemini image generation models",
+        "Secure authentication and user management",
+        "FastAPI backend with Jinja2 templating"
+      ],
+      "media": {
+        "thumbnail": "",
+        "screenshots": [],
+        "demoGif": ""
+      },
+      "visibility": {
+        "showOnPortfolio": true,
+        "showSourceLink": false,
+        "showMetrics": false
+      }
+    },
+    {
+      "id": "deb007/pfdf",
+      "name": "pfdf",
+      "slug": "pfdf",
+      "description": "PFDF is a modern personal finance data platform that integrates with Firefly III to provide advanced analytics, forecasting, and financial insights through a FastAPI backend.",
+      "status": "wip",
+      "techStack": [
+        "Python"
+      ],
+      "category": "backend",
+      "tags": [
+        "personal-finance",
+        "fastapi",
+        "analytics"
+      ],
+      "links": {
+        "github": "https://github.com/deb007/pfdf"
+      },
+      "metrics": {
+        "starsCount": 1,
+        "customMetrics": []
+      },
+      "timeline": {
+        "startDate": "2025-05-02",
+        "endDate": null,
+        "lastCommit": "2026-04-30T12:32:51+00:00"
+      },
+      "_githubMeta": {
+        "fullName": "deb007/pfdf",
+        "defaultBranch": "main",
+        "language": "Python",
+        "fork": false,
+        "private": true,
+        "syncedAt": "2026-05-01T09:43:50.226142+00:00"
+      },
+      "featured": true,
+      "displayOrder": null,
+      "longDescription": "This repository powers a comprehensive personal finance dashboard, enabling users to analyze, forecast, and optimize their personal financial health. It leverages FastAPI, SQLAlchemy, and Pydantic for robust API design and data validation, while integrating with Firefly III for seamless transaction and account management. The platform features automated background jobs for insights, budget suggestions, and recurring transaction handling. With a modular architecture and clear documentation, PFDF is designed for extensibility and ease of deployment. Its focus on actionable analytics and user-centric features makes it a valuable tool for anyone seeking deeper control over their finances.",
+      "highlights": [
+        "Integrates with Firefly III for transaction and account management",
+        "Automated background jobs for budget suggestions and insights",
+        "Forecasting and recurring transaction handling"
+      ],
+      "media": {
+        "thumbnail": "",
+        "screenshots": [],
+        "demoGif": ""
+      },
+      "visibility": {
+        "showOnPortfolio": true,
+        "showSourceLink": false,
+        "showMetrics": false
+      }
+    },
+    {
+      "id": "deb007/superhit-muqabla",
+      "name": "superhit-muqabla",
+      "slug": "superhit-muqabla",
+      "description": "Superhit Muqabla is a fun, nostalgia-driven project that recreates the classic song-ranking experience by leveraging modern tools to fetch, rank, and present popular music in an engaging, programmatic format.",
+      "status": "wip",
+      "techStack": [
+        "Python"
+      ],
+      "category": "personal",
+      "tags": [
+        "music",
+        "automation",
+        "cli"
+      ],
+      "links": {
+        "github": "https://github.com/deb007/superhit-muqabla"
+      },
+      "metrics": {
+        "starsCount": 0,
+        "customMetrics": []
+      },
+      "timeline": {
+        "startDate": "2025-09-26",
+        "endDate": null,
+        "lastCommit": "2025-09-26T09:54:04+00:00"
+      },
+      "_githubMeta": {
+        "fullName": "deb007/superhit-muqabla",
+        "defaultBranch": "main",
+        "language": "Python",
+        "fork": false,
+        "private": false,
+        "syncedAt": "2026-05-01T09:43:50.228369+00:00"
+      },
+      "featured": false,
+      "displayOrder": null,
+      "longDescription": "Superhit Muqabla is a Python-based project inspired by the iconic Indian music countdown show Superhit Muqabla, reimagined for the modern developer ecosystem. It programmatically curates and ranks songs, simulating the experience of a dynamic music leaderboard using external data sources and structured logic. The project demonstrates how APIs and automation can be combined to build interactive and entertaining data-driven applications. It is particularly useful as a learning tool for working with LLMs & sharing weekly ranking of songs, and lightweight CLI or script-based interfaces.",
+      "highlights": [],
+      "media": {
+        "thumbnail": "",
+        "screenshots": [],
+        "demoGif": ""
+      },
+      "visibility": {
+        "showOnPortfolio": true,
+        "showSourceLink": false,
+        "showMetrics": false
+      }
+    },
+    {
+      "id": "deb007/travelbuddy",
+      "name": "travelbuddy",
+      "slug": "travelbuddy",
+      "description": "TravelBuddy is a Python-based web application designed to help users manage travel budgets, track expenses, and monitor currency exchange rates for trips.",
+      "status": "active",
+      "techStack": [
+        "Python"
+      ],
+      "category": "backend",
+      "tags": [
+        "travel",
+        "finance",
+        "expense-tracking"
+      ],
+      "links": {
+        "github": "https://github.com/deb007/travelbuddy"
+      },
+      "metrics": {
+        "starsCount": 0,
+        "customMetrics": []
+      },
+      "timeline": {
+        "startDate": "2025-09-24",
+        "endDate": null,
+        "lastCommit": "2025-11-06T13:26:32+00:00"
+      },
+      "_githubMeta": {
+        "fullName": "deb007/travelbuddy",
+        "defaultBranch": "main",
+        "language": "Python",
+        "fork": false,
+        "private": false,
+        "syncedAt": "2026-05-01T09:43:50.227696+00:00"
+      },
+      "featured": false,
+      "displayOrder": null,
+      "longDescription": "TravelBuddy enables users to efficiently plan and monitor their travel finances by providing tools for budgeting, expense tracking, and real-time forex rate management. The application supports multiple trips, allowing users to organize expenses and budgets for each journey separately. With integrated analytics and alerting features, users can gain insights into their spending patterns and receive notifications for important financial events. The system leverages a modular architecture with clear separation between data access, business logic, and presentation layers, ensuring maintainability and scalability. TravelBuddy is ideal for travelers seeking a comprehensive solution to manage their trip finances and optimize their travel experience.",
+      "highlights": [
+        "Multi-trip budgeting and expense tracking",
+        "Real-time forex rate monitoring with alerts",
+        "Spending analytics and pattern insights"
+      ],
+      "media": {
+        "thumbnail": "",
+        "screenshots": [],
+        "demoGif": ""
+      },
+      "visibility": {
+        "showOnPortfolio": true,
+        "showSourceLink": false,
+        "showMetrics": false
+      }
+    }
+  ]
+}

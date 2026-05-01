@@ -1,13 +1,133 @@
-<h1>http://deb007.github.io</h1>
+<!DOCTYPE html>
+<html lang="en">
 
-<h2>My Scripts</h2>
-<h3>Web speech support</h3>
-<ul>
-<li><a href = 'web-speech.html'>web-speech.html</a></li>
-<li><a href = 'simple.speech.search.html'>simple.speech.search.html</a></li>
-</ul>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debjyoti Aich — Portfolio</title>
+  <meta name="description"
+    content="Personal portfolio of Debjyoti Aich. Data Engineer, AI Builder, and Product Thinker.">
 
-<h3>Web fullscreen support</h3>
-<ul>
-<li><a href = 'fullscreen.html'>fullscreen.html</a></li>
-</ul>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap">
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="#" class="logo">DA</a>
+      <div class="nav-links">
+        <a href="#work" class="nav-link active">Work</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#contact" class="nav-link">Contact</a>
+        <a href="https://github.com/deb007" class="nav-link" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+      <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
+      </button>
+    </div>
+  </nav>
+
+  <main id="main">
+    <section id="hero" class="hero">
+      <div class="container hero-inner">
+        <div class="hero-content">
+          <div class="eyebrow fade-up"><span class="line"></span> Building practical AI tools for real-world impact
+          </div>
+          <h1 class="fade-up" id="hero-name">Debjyoti Aich</h1>
+          <h2 class="fade-up role-container">
+            <span class="role-swap-wrapper">
+              <span class="role-swap" id="role-text">LLM Wrangler</span>
+            </span>
+          </h2>
+          <p class="hero-body fade-up" id="hero-bio">I enjoy building AI-first applications, exploring LLMs, and turning
+            ideas into production-ready systems, with continuous learning and improvement.</p>
+          <div class="hero-cta fade-up">
+            <a href="#work" class="btn-primary">View Work ↓</a>
+            <a href="https://github.com/deb007" class="btn-ghost" id="hero-github" target="_blank" rel="noopener">GitHub
+              ↗</a>
+          </div>
+        </div>
+        <div class="hero-visual fade-up">
+          <div class="hero-aura"></div>
+          <div class="hero-image-wrapper">
+            <img src="images/hero_abstract.png" alt="Abstract AI visual" class="hero-img">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="work">
+      <div class="container">
+        <div class="work-grid" id="work-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <section id="stack" class="stack-section">
+      <div class="stack-scroll">
+        <div class="stack-track" id="stack-track">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="container about-inner editorial-layout">
+        <div class="about-text-col reveal">
+          <h2 class="pull-quote">"I build systems that think for themselves."</h2>
+          <p class="about-body">I'm a solution architect who cares about both the architecture underlying the system and
+            the
+            pixels that present it. I focus on AI and LLMs, and product building, aiming to bridge the gap
+            between complex backend systems and intuitive user experiences.</p>
+          <ul class="fact-list" style="margin-top: 1.5rem;">
+            <li><span class="fact-label">Location</span> <span class="fact-val">Delhi-NCR, IN</span></li>
+            <li><span class="fact-label">Focus</span> <span class="fact-val">Generative AI, Agentic AI</span></li>
+            <li><span class="fact-label">Experience</span> <span class="fact-val">20+ years</span></li>
+          </ul>
+        </div>
+        <div class="about-visual-col reveal">
+          <div class="about-img-wrapper">
+            <img src="images/about_abstract.png" alt="AI abstract networks" class="about-img">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="container contact-inner reveal">
+        <h2 class="contact-title">Let's build something.</h2>
+        <p class="contact-sub">Reach out — I'm selective but genuinely interested in the right problems.</p>
+        <a href="#" class="email-btn" id="email-btn">
+          <span class="email-text" id="email-text">Email Me ↗</span>
+        </a>
+        <div class="social-row" id="social-row">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>&copy; <span id="year"></span> <span id="footer-name">Debjyoti Aich</span></span>
+      <span>Built with &hearts; and vim</span>
+    </div>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+
+</html>
