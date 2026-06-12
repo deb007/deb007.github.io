@@ -153,7 +153,7 @@ async function loadProjects() {
 
       const isFeatured = repo.featured ? 'featured' : '';
       const featureBadge = repo.featured ? `<span style="display:inline-flex;align-items:center;gap:4px;color:var(--warning);margin-right:8px;"><i data-lucide="star" style="width:12px;height:12px;color:var(--warning)"></i> Featured</span>` : '';
-      const year = repo.timeline?.startDate ? repo.timeline.startDate.split('-')[0] : '2024';
+      const year = repo.timeline?.startDate ? repo.timeline.startDate.split('-')[0] : '2026';
       const statusClass = repo.status === 'active' ? 'active' : repo.status === 'wip' ? 'wip' : '';
       const statusText = repo.status || 'Archived';
 

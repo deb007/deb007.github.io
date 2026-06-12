@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-01T09:43:50.232637+00:00",
+  "lastUpdated": "2026-06-12T00:00:00+00:00",
   "repos": [
     {
       "id": "deb007/ai_weather_report",
@@ -526,6 +526,170 @@
         "Multi-trip budgeting and expense tracking",
         "Real-time forex rate monitoring with alerts",
         "Spending analytics and pattern insights"
+      ],
+      "media": {
+        "thumbnail": "",
+        "screenshots": [],
+        "demoGif": ""
+      },
+      "visibility": {
+        "showOnPortfolio": true,
+        "showSourceLink": false,
+        "showMetrics": false
+      }
+    },
+    {
+      "id": "deb007/prompt-runner-extension",
+      "name": "prompt-runner-extension",
+      "slug": "prompt-runner-extension",
+      "description": "A Chrome extension that runs AI prompts on any web page — summarise, extract, analyse, translate, and ask questions about page content with one click or a keyboard shortcut.",
+      "status": "active",
+      "techStack": [
+        "JavaScript"
+      ],
+      "category": "tooling",
+      "tags": [
+        "chrome-extension",
+        "llm",
+        "productivity"
+      ],
+      "links": {
+        "github": "https://github.com/deb007/prompt-runner-extension"
+      },
+      "metrics": {
+        "starsCount": 0,
+        "customMetrics": []
+      },
+      "timeline": {
+        "startDate": null,
+        "endDate": null,
+        "lastCommit": null
+      },
+      "_githubMeta": {
+        "fullName": "deb007/prompt-runner-extension",
+        "defaultBranch": "main",
+        "language": "JavaScript",
+        "fork": false,
+        "private": true,
+        "syncedAt": "2026-06-12T00:00:00+00:00"
+      },
+      "featured": true,
+      "displayOrder": null,
+      "longDescription": "Prompt Runner Extension is a Chrome extension that brings AI capabilities directly to any web page. With a single click or keyboard shortcut, users can run AI prompts against the current page content to summarise articles, extract key information, analyse data, translate text, or ask freeform questions. It removes the friction of context-switching between a browser and an AI chat interface, making it a practical productivity tool for researchers, writers, and developers who work heavily in the browser.",
+      "highlights": [
+        "Run AI prompts on any web page with one click or a keyboard shortcut",
+        "Supports any OpenAI-compatible LLM endpoint including Anthropic Claude and LiteLLM",
+        "Interactive Ask mode with multi-turn conversation and auto-suggested follow-up questions",
+        "Agentic mode with web search, semantic knowledge base, and persistent long-term memory"
+      ],
+      "media": {
+        "thumbnail": "",
+        "screenshots": [],
+        "demoGif": ""
+      },
+      "visibility": {
+        "showOnPortfolio": true,
+        "showSourceLink": false,
+        "showMetrics": false
+      }
+    },
+    {
+      "id": "deb007/MyInvs",
+      "name": "MyInvs",
+      "slug": "myinvs",
+      "description": "A self-hosted FastAPI portfolio tracker for Indian investors that imports Consolidated Account Statements from CDSL, NSDL, CAMS, and KFintech, delivers FIFO-based tax analytics, and runs an AI-powered portfolio risk agent.",
+      "status": "active",
+      "techStack": [
+        "Python"
+      ],
+      "category": "genai",
+      "tags": [
+        "fastapi",
+        "personal-finance",
+        "india"
+      ],
+      "links": {
+        "github": "https://github.com/deb007/MyInvs"
+      },
+      "metrics": {
+        "starsCount": 0,
+        "customMetrics": []
+      },
+      "timeline": {
+        "startDate": null,
+        "endDate": null,
+        "lastCommit": null
+      },
+      "_githubMeta": {
+        "fullName": "deb007/MyInvs",
+        "defaultBranch": "main",
+        "language": "Python",
+        "fork": false,
+        "private": true,
+        "syncedAt": "2026-06-12T00:00:00+00:00"
+      },
+      "featured": true,
+      "displayOrder": null,
+      "longDescription": "MyInvs is a self-hosted investment portfolio tracker built for Indian investors. It imports Consolidated Account Statements (CAS) from all major depositories and registrars — CDSL, NSDL, CAMS, and KFintech — to give a unified view of equities, mutual funds, and other holdings. The platform calculates FIFO-based capital gains for accurate tax reporting and features an AI-powered risk agent that analyses portfolio composition and surface actionable insights. Built on FastAPI with a clean backend architecture, it is designed to be easily self-hosted and extended with additional data sources or analytics modules.",
+      "highlights": [
+        "Full CAS import pipeline covering CDSL, NSDL, CAMS, and KFintech depositories",
+        "FIFO tax-lot engine with Finance Act 2024 rules, STCG/LTCG classification, and a tax-harvesting scanner",
+        "AI-powered portfolio risk agent with actionable insights",
+        "LangGraph Portfolio Risk Agent: parallel market-context, news-sentiment, and portfolio-data nodes feeding ATR-based SL/target proposals into an LLM synthesis report"
+      ],
+      "media": {
+        "thumbnail": "",
+        "screenshots": [],
+        "demoGif": ""
+      },
+      "visibility": {
+        "showOnPortfolio": true,
+        "showSourceLink": false,
+        "showMetrics": false
+      }
+    },
+    {
+      "id": "deb007/callz",
+      "name": "callz",
+      "slug": "callz",
+      "description": "An AI-powered call recording intelligence tool that transcribes, indexes, and semantically searches phone call recordings using local speech-to-text and large language models.",
+      "status": "active",
+      "techStack": [
+        "Python"
+      ],
+      "category": "genai",
+      "tags": [
+        "llm",
+        "speech-to-text",
+        "search"
+      ],
+      "links": {
+        "github": "https://github.com/deb007/callz"
+      },
+      "metrics": {
+        "starsCount": 0,
+        "customMetrics": []
+      },
+      "timeline": {
+        "startDate": null,
+        "endDate": null,
+        "lastCommit": null
+      },
+      "_githubMeta": {
+        "fullName": "deb007/callz",
+        "defaultBranch": "main",
+        "language": "Python",
+        "fork": false,
+        "private": true,
+        "syncedAt": "2026-06-12T00:00:00+00:00"
+      },
+      "featured": true,
+      "displayOrder": null,
+      "longDescription": "Callz is an AI-powered call recording intelligence platform that turns phone call recordings into a searchable knowledge base. It transcribes audio files using local speech-to-text models, indexes the resulting transcripts, and exposes semantic search powered by large language models — letting users query across hundreds of calls in natural language. Running entirely on local models means recordings stay private and no data is sent to third-party cloud services. The tool is designed for individuals and small teams who need to retrieve information from call archives without manual review.",
+      "highlights": [
+        "End-to-end local AI pipeline: Whisper transcription → vector embeddings → LLM summarisation with no cloud dependency",
+        "Semantic search across all call recordings with LLM-synthesised answers and relevance scoring",
+        "Responsive dark-mode web UI powered by FastAPI, HTMX, Alpine.js, and Tailwind — no build step required"
       ],
       "media": {
         "thumbnail": "",
