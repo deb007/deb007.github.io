@@ -31,6 +31,22 @@ const socialRow = document.getElementById('social-row');
 const nav = document.getElementById('nav');
 const menuToggle = document.querySelector('.menu-toggle');
 const navLinks = document.querySelector('.nav-links');
+const themeToggle = document.getElementById('theme-toggle');
+
+// Theme toggle
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+  themeToggle.setAttribute('aria-label', theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode');
+}
+
+// Init aria-label to match current state
+applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+
+themeToggle.addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  applyTheme(current === 'light' ? 'dark' : 'light');
+});
 
 // Setup Config Data
 document.getElementById('year').textContent = new Date().getFullYear();
@@ -307,9 +323,9 @@ function renderContribCalendar(container, contributions, tooltipEl) {
 
   const LEVEL_COLORS = [
     'var(--bg-overlay)',
-    'rgba(110,231,247,0.12)',
-    'rgba(110,231,247,0.32)',
-    'rgba(110,231,247,0.60)',
+    'var(--cal-l1)',
+    'var(--cal-l2)',
+    'var(--cal-l3)',
     'var(--accent)'
   ];
 

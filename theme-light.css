@@ -1,0 +1,63 @@
+    [data-theme="light"] {
+        /* Backgrounds */
+        --bg-base: #f5f5f8;
+        --bg-raised: #ffffff;
+        --bg-overlay: #eaeaf0;
+
+        /* Accent — darker teal for legibility on light bg */
+        --accent: #0891b2;
+        --accent-muted: rgba(8, 145, 178, 0.08);
+        --accent-border: rgba(8, 145, 178, 0.28);
+
+        /* Text */
+        --text-primary: #0f0f1c;
+        --text-secondary: #4a4a6a;
+        --text-muted: #9999bb;
+
+        /* Semantic */
+        --border: rgba(0, 0, 0, 0.08);
+        --border-h: rgba(0, 0, 0, 0.15);
+        --success: #16a34a;
+        --warning: #d97706;
+
+        /* Contribution heatmap levels — visible on white bg */
+        --cal-l1: #bae6f5;
+        --cal-l2: #67c5e5;
+        --cal-l3: #2a9fc0;
+    }
+
+    /* Nav */
+    [data-theme="light"] nav {
+        background: rgba(245, 245, 248, 0.60);
+        border-color: rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    [data-theme="light"] nav.scrolled {
+        background: rgba(245, 245, 248, 0.85);
+        box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        border-color: rgba(0, 0, 0, 0.12);
+    }
+
+    /* Mobile nav overlay */
+    [data-theme="light"] .nav-links {
+        background: var(--bg-base);
+    }
+
+    /* Image blend modes — screen/lighten don't work on light bg */
+    [data-theme="light"] .hero-img {
+        mix-blend-mode: multiply;
+    }
+
+    [data-theme="light"] .about-img {
+        mix-blend-mode: multiply;
+    }
+
+    /* Softer shadows on light */
+    [data-theme="light"] .card:hover {
+        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.10);
+    }
+
+    [data-theme="light"] .gh-tooltip {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
