@@ -144,7 +144,11 @@ async function loadProjects() {
     if (!res.ok) throw new Error("Not found");
     const data = await res.json();
     const repos = data.repos || [];
-    repos.sort((a, b) => (b.featured === true) - (a.featured === true));
+    const shuffle = arr => arr.slice().sort(() => Math.random() - 0.5);
+    const featured = shuffle(repos.filter(r => r.featured));
+    const rest = shuffle(repos.filter(r => !r.featured));
+    repos.length = 0;
+    repos.push(...featured, ...rest);
 
     if (repos.length === 0) throw new Error("Empty repos");
 
