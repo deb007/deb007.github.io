@@ -1,47 +1,41 @@
-    :root,
-    [data-theme="dark"] {
-        /* Backgrounds */
-        --bg-base: #080810;
-        --bg-raised: #0f0f1c;
-        --bg-overlay: #161628;
+/* ==========================================================================
+   Theme tokens — DARK (default)
+   Monochrome UI: all colour comes from imagery. One restrained cyan accent,
+   pulled from hero_abstract.png, reserved for active states.
+   `.island` re-declares the dark tokens so image-led bands (hero, closing
+   CTA, header while over the hero) stay dark in both themes.
+   ========================================================================== */
+:root,
+[data-theme="dark"],
+.island {
+  --ink: 255 255 255;            /* foreground as an RGB triplet */
+  --bg: #050505;
+  --bg-2: #0a0a0a;
+  --bg-3: #111111;
 
-        /* Accent */
-        --accent: #6ee7f7;
-        --accent-muted: rgba(110, 231, 247, 0.10);
-        --accent-border: rgba(110, 231, 247, 0.20);
+  --fg: rgb(var(--ink));
+  --fg-2: rgb(var(--ink) / 0.72); /* body copy */
+  --fg-3: rgb(var(--ink) / 0.62); /* meta / micro-labels (≥ 60%) */
+  --fg-dim: rgb(var(--ink) / 0.48);
+  --fg-faint: rgb(var(--ink) / 0.2);
 
-        /* Text */
-        --text-primary: #eeeef5;
-        --text-secondary: #8888aa;
-        --text-muted: #44445a;
+  --line: rgb(var(--ink) / 0.1);
+  --line-2: rgb(var(--ink) / 0.2);
+  --wash: rgb(var(--ink) / 0.04);
 
-        /* Semantic */
-        --border: rgba(255, 255, 255, 0.06);
-        --border-h: rgba(255, 255, 255, 0.12);
-        --success: #4ade80;
-        --warning: #fbbf24;
+  --accent: #5fe3e6;
+  --accent-wash: rgb(95 227 230 / 0.1);
 
-        /* Typography */
-        --font-display: 'Bricolage Grotesque', sans-serif;
-        --font-mono: 'DM Mono', monospace;
+  /* Filled button (white on dark) */
+  --btn-bg: #ffffff;
+  --btn-fg: #050505;
 
-        --text-xs: clamp(11px, 1.1vw, 12px);
-        --text-sm: clamp(13px, 1.3vw, 14px);
-        --text-base: clamp(14px, 1.4vw, 16px);
-        --text-lg: clamp(18px, 2vw, 22px);
-        --text-xl: clamp(28px, 4vw, 42px);
-        --text-2xl: clamp(48px, 8vw, 100px);
+  /* Contribution calendar levels */
+  --cal-0: rgb(var(--ink) / 0.06);
+  --cal-1: rgb(var(--ink) / 0.22);
+  --cal-2: rgb(var(--ink) / 0.42);
+  --cal-3: rgb(var(--ink) / 0.68);
+  --cal-4: var(--accent);
 
-        --leading-tight: 1.1;
-        --leading-body: 1.7;
-        --leading-loose: 1.9;
-
-        --tracking-hero: -0.04em;
-        --tracking-label: 0.10em;
-        --tracking-mono: 0.02em;
-
-        /* Contribution heatmap levels */
-        --cal-l1: rgba(110, 231, 247, 0.18);
-        --cal-l2: rgba(110, 231, 247, 0.42);
-        --cal-l3: rgba(110, 231, 247, 0.72);
-    }
+  color-scheme: dark;
+}

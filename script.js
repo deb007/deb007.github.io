@@ -1,3 +1,11 @@
+/* ==========================================================================
+   deb007.github.io — script.js
+   Vanilla JS. One rAF-throttled scroll loop drives the header state, the
+   statement word reveal and the capabilities rail; IntersectionObserver
+   handles reveals, nav state and in-view checks. Everything degrades to
+   static, fully visible content under prefers-reduced-motion or without JS.
+   ========================================================================== */
+
 const CONFIG = {
   name: "Debjyoti Aich",
   email: atob("YWljaDMwQGdtYWlsLmNvbQ=="),
@@ -6,233 +14,661 @@ const CONFIG = {
     { name: "LinkedIn", url: "https://linkedin.com/in/deb007" },
     { name: "Twitter/X", url: "https://twitter.com/deb007" }
   ],
-  roles: ["LLM Wrangler", "AI Builder", "Product Thinker", "Solution Architect", "Open Source Contributor"],
-  skills: ["Python", "TypeScript", "Node.js", "PostgreSQL", "FastAPI", "Azure OpenAI", "Supabase", "Docker", "TailwindCSS"]
+  roles: ["LLM Wrangler", "AI Builder", "Product Thinker", "Solution Architect", "Open Source Contributor"]
 };
 
-const DEVICON_MAP = {
-  "Python": "devicon-python-plain colored",
-  "TypeScript": "devicon-typescript-plain colored",
-  "Node.js": "devicon-nodejs-plain colored",
-  "React Native": "devicon-react-original colored",
-  "PostgreSQL": "devicon-postgresql-plain colored",
-  "FastAPI": "devicon-fastapi-plain colored",
-  "Azure OpenAI": "devicon-azure-plain colored",
-  "Supabase": "devicon-supabase-plain colored",
-  "Docker": "devicon-docker-plain colored",
-  "TailwindCSS": "devicon-tailwindcss-original colored"
-};
+const root = document.documentElement;
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const $ = (sel, ctx = document) => ctx.querySelector(sel);
+const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
 
-// DOM Elements
-const roleTextElement = document.getElementById('role-text');
-const workGrid = document.getElementById('work-grid');
-const stackTrack = document.getElementById('stack-track');
-const socialRow = document.getElementById('social-row');
-const nav = document.getElementById('nav');
-const menuToggle = document.querySelector('.menu-toggle');
-const navLinks = document.querySelector('.nav-links');
-const themeToggle = document.getElementById('theme-toggle');
-
-// Theme toggle
-function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('theme', theme);
-  themeToggle.setAttribute('aria-label', theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode');
+// Escape text before interpolating it into HTML strings
+function esc(str) {
+  return String(str ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
 }
 
-// Init aria-label to match current state
-applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+/* --------------------------------------------------------------------------
+   Theme toggle
+   -------------------------------------------------------------------------- */
+const themeToggle = $('#theme-toggle');
+const themeMeta = $('meta[name="theme-color"]');
 
+function applyTheme(theme, persist) {
+  root.setAttribute('data-theme', theme);
+  if (persist) {
+    try { localStorage.setItem('theme', theme); } catch (_) { /* private mode */ }
+  }
+  themeToggle.setAttribute('aria-label', theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme');
+  if (themeMeta) themeMeta.setAttribute('content', theme === 'light' ? '#f3f2ee' : '#050505');
+}
+
+applyTheme(root.getAttribute('data-theme') || 'dark', false);
 themeToggle.addEventListener('click', () => {
-  const current = document.documentElement.getAttribute('data-theme') || 'dark';
-  applyTheme(current === 'light' ? 'dark' : 'light');
+  applyTheme(root.getAttribute('data-theme') === 'light' ? 'dark' : 'light', true);
 });
 
-// Setup Config Data
-document.getElementById('year').textContent = new Date().getFullYear();
-document.getElementById('email-btn').href = `mailto:${CONFIG.email}`;
-document.getElementById('email-text').innerHTML = `<i data-lucide="mail" style="width:18px;height:18px;margin-right:8px;vertical-align:middle;"></i>${CONFIG.email}`;
+/* --------------------------------------------------------------------------
+   Config-driven content: email, socials, year
+   -------------------------------------------------------------------------- */
+$$('[data-mailto]').forEach(el => { el.href = `mailto:${CONFIG.email}`; });
+$$('[data-email-text]').forEach(el => { el.textContent = CONFIG.email; });
 
-// Social Links
-socialRow.innerHTML = CONFIG.socials.map((social, idx) => {
-  const isLast = idx === CONFIG.socials.length - 1;
-  const iconMap = { "GitHub": "github", "LinkedIn": "linkedin", "Twitter/X": "twitter" };
-  const icon = iconMap[social.name] ? `<i data-lucide="${iconMap[social.name]}" style="width:16px;height:16px;margin-right:6px;vertical-align:middle;"></i>` : '';
-  return `<a href="${social.url}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;">${icon}${social.name}</a>${!isLast ? '<span class="dot">·</span>' : ''}`;
-}).join('');
+const socialRow = $('#social-row');
+if (socialRow) {
+  socialRow.innerHTML = CONFIG.socials.map(s =>
+    `<li><a href="${esc(s.url)}" target="_blank" rel="noopener me">${esc(s.name)} <span class="arrow" aria-hidden="true">↗</span></a></li>`
+  ).join('');
+}
 
-// Stack Chips
-const chipsHTML = CONFIG.skills.map(s => {
-  const iconClass = DEVICON_MAP[s];
-  const iconHtml = iconClass ? `<i class="${iconClass}" style="margin-right:6px;font-size:16px;vertical-align:middle;"></i>` : '';
-  return `<span class="chip">${iconHtml}${s}</span>`;
-}).join('');
-stackTrack.innerHTML = chipsHTML + chipsHTML; // Duplicate for infinite scroll
+const yearEl = $('#year');
+if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-// Word Swap Animation
-let currentRoleIndex = 0;
-roleTextElement.textContent = CONFIG.roles[0];
+/* --------------------------------------------------------------------------
+   Hero: role swap + IST clock
+   -------------------------------------------------------------------------- */
+const roleText = $('#role-text');
+const roleSr = $('#role-sr');
+if (roleSr) roleSr.textContent = `Also known as: ${CONFIG.roles.join(', ')}.`;
 
-setInterval(() => {
-  const nextIndex = (currentRoleIndex + 1) % CONFIG.roles.length;
-  roleTextElement.classList.add('out');
+if (roleText) {
+  let roleIdx = 0;
+  roleText.textContent = CONFIG.roles[0];
+  if (!reducedMotion.matches) {
+    setInterval(() => {
+      if (document.hidden) return;
+      roleText.classList.add('is-out');
+      setTimeout(() => {
+        roleIdx = (roleIdx + 1) % CONFIG.roles.length;
+        roleText.textContent = CONFIG.roles[roleIdx];
+        roleText.classList.remove('is-out');
+        roleText.classList.add('is-pre');
+        void roleText.offsetWidth; // reflow so the next state transitions
+        roleText.classList.remove('is-pre');
+      }, 380);
+    }, 2800);
+  }
+}
 
-  setTimeout(() => {
-    roleTextElement.textContent = CONFIG.roles[nextIndex];
-    roleTextElement.classList.remove('out');
-    roleTextElement.classList.add('prepare');
-
-    // Force reflow
-    void roleTextElement.offsetWidth;
-
-    roleTextElement.classList.remove('prepare');
-    currentRoleIndex = nextIndex;
-  }, 400);
-}, 2500);
-
-// Scroll Observer for reveals
-const observerOptions = {
-  root: null,
-  rootMargin: '0px',
-  threshold: 0.1
-};
-
-const observer = new IntersectionObserver((entries, obs) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      obs.unobserve(entry.target);
-    }
+const clockEl = $('#clock');
+if (clockEl) {
+  const fmt = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
   });
-}, observerOptions);
+  const tick = () => {
+    const t = fmt.format(new Date());
+    clockEl.textContent = t;
+    clockEl.setAttribute('datetime', `${t}+05:30`);
+  };
+  tick();
+  setInterval(tick, 1000);
+}
 
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+/* --------------------------------------------------------------------------
+   Reveal on scroll (rise 24px + fade, ~60ms stagger per batch)
+   -------------------------------------------------------------------------- */
+const revealObserver = ('IntersectionObserver' in window) ? new IntersectionObserver((entries, obs) => {
+  const incoming = entries.filter(e => e.isIntersecting).map(e => e.target);
+  incoming.sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1);
+  incoming.forEach((el, i) => {
+    el.style.setProperty('--i', Math.min(i, 8));
+    el.classList.add('is-in');
+    obs.unobserve(el);
+  });
+}, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 }) : null;
 
-// Nav Scroll & Active Link
-const sections = document.querySelectorAll('section');
-const navItems = document.querySelectorAll('.nav-link[href^="#"]');
+function observeReveals(scope = document) {
+  const els = $$('[data-reveal]:not(.is-in)', scope);
+  if (!revealObserver || !root.classList.contains('motion')) {
+    els.forEach(el => el.classList.add('is-in'));
+    return;
+  }
+  els.forEach(el => revealObserver.observe(el));
+}
+observeReveals();
 
-window.addEventListener('scroll', () => {
-  // Nav blur border
-  if (window.scrollY > 20) {
-    nav.classList.add('scrolled');
+/* --------------------------------------------------------------------------
+   Header state + active nav link
+   -------------------------------------------------------------------------- */
+const header = $('#site-header');
+
+function updateHeader() {
+  header.classList.toggle('is-scrolled', window.scrollY > 24);
+}
+
+const navLinks = $$('[data-nav-link]');
+if ('IntersectionObserver' in window) {
+  const navObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const key = entry.target.dataset.nav;
+      navLinks.forEach(a => {
+        if (a.dataset.navLink === key) a.setAttribute('aria-current', 'true');
+        else a.removeAttribute('aria-current');
+      });
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  $$('section[data-nav]').forEach(s => navObserver.observe(s));
+
+  // Clear the active state while the hero / statement are in the band
+  const clearObserver = new IntersectionObserver(entries => {
+    if (entries.some(e => e.isIntersecting)) navLinks.forEach(a => a.removeAttribute('aria-current'));
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  ['#top', '#statement'].forEach(id => { const el = $(id); if (el) clearObserver.observe(el); });
+}
+
+/* --------------------------------------------------------------------------
+   Mobile overlay menu — Esc closes, focus trapped, body scroll locked
+   -------------------------------------------------------------------------- */
+const menuToggle = $('#menu-toggle');
+const menu = $('#menu-overlay');
+const menuClose = $('#menu-close');
+let menuCloseTimer = null;
+
+$$('.menu-overlay__list li', menu).forEach((li, i) => li.style.setProperty('--i', i));
+
+function focusables(scope) {
+  return $$('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])', scope)
+    .filter(el => el.offsetParent !== null);
+}
+
+function openMenu() {
+  clearTimeout(menuCloseTimer);
+  menu.hidden = false;
+  root.classList.add('menu-open');
+  menuToggle.setAttribute('aria-expanded', 'true');
+  requestAnimationFrame(() => menu.classList.add('is-open'));
+  menuClose.focus();
+  document.addEventListener('keydown', onMenuKey);
+}
+
+function closeMenu(returnFocus = true) {
+  if (menu.hidden) return;
+  menu.classList.remove('is-open');
+  root.classList.remove('menu-open');
+  menuToggle.setAttribute('aria-expanded', 'false');
+  document.removeEventListener('keydown', onMenuKey);
+  const hide = () => { menu.hidden = true; };
+  if (reducedMotion.matches) hide();
+  else menuCloseTimer = setTimeout(hide, 400);
+  if (returnFocus) menuToggle.focus();
+}
+
+function onMenuKey(e) {
+  if (e.key === 'Escape') { e.preventDefault(); closeMenu(); return; }
+  if (e.key !== 'Tab') return;
+  const items = focusables(menu);
+  if (!items.length) return;
+  const first = items[0];
+  const last = items[items.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  else if (!menu.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+}
+
+menuToggle.addEventListener('click', openMenu);
+menuClose.addEventListener('click', () => closeMenu());
+// Navigating from the menu: close first so the anchor scroll isn't locked
+$$('a', menu).forEach(a => a.addEventListener('click', () => closeMenu(false)));
+window.matchMedia('(min-width: 1024px)').addEventListener('change', e => { if (e.matches) closeMenu(false); });
+
+/* --------------------------------------------------------------------------
+   Statement — split into words that light up with scroll progress
+   -------------------------------------------------------------------------- */
+const statement = $('#statement');
+const statementText = $('#statement-text');
+let statementWords = [];
+let statementLit = -1;
+
+if (statementText && root.classList.contains('motion')) {
+  // Keep a clean copy for assistive tech; the split version is visual only
+  const srCopy = document.createElement('p');
+  srCopy.className = 'sr-only';
+  srCopy.textContent = statementText.textContent.replace(/\s+/g, ' ').trim();
+  statementText.before(srCopy);
+  statementText.setAttribute('aria-hidden', 'true');
+
+  const splitNode = node => {
+    Array.from(node.childNodes).forEach(child => {
+      if (child.nodeType === Node.TEXT_NODE) {
+        const frag = document.createDocumentFragment();
+        child.textContent.split(/(\s+)/).forEach(part => {
+          if (!part) return;
+          if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
+          const span = document.createElement('span');
+          span.className = 'w';
+          span.textContent = part;
+          frag.appendChild(span);
+        });
+        child.replaceWith(frag);
+      } else if (child.nodeType === Node.ELEMENT_NODE) {
+        splitNode(child);
+      }
+    });
+  };
+  splitNode(statementText);
+  statementWords = $$('.w', statementText);
+}
+
+function updateStatement(vh) {
+  if (!statementWords.length) return;
+  const rect = statement.getBoundingClientRect();
+  if (rect.bottom < -vh || rect.top > vh * 2) return;
+  let p;
+  if (rect.height > vh * 1.5) {
+    // Pinned (desktop): progress through the sticky runway
+    p = -rect.top / (rect.height - vh);
   } else {
-    nav.classList.remove('scrolled');
+    // Unpinned: progress as the paragraph crosses the viewport
+    const t = statementText.getBoundingClientRect();
+    p = (vh * 0.85 - t.top) / (t.height + vh * 0.35);
+  }
+  const lit = Math.round(clamp(p * 1.15, 0, 1) * statementWords.length);
+  if (lit === statementLit) return;
+  statementLit = lit;
+  statementWords.forEach((w, i) => w.classList.toggle('is-lit', i < lit));
+}
+
+/* --------------------------------------------------------------------------
+   01 / Reference architecture — tablist stepper + SVG highlights
+   -------------------------------------------------------------------------- */
+const STAGES = [
+  {
+    desc: 'Skill selection and intent classification route a plain-language question to the right domain skill — order cuts, inventory positions, late-trip root cause.',
+    chips: ['LangGraph', 'Agent skills', 'PepGenX LLM'],
+    nodes: ['client', 'intent', 'llm'],
+    edges: ['client-intent', 'llm-intent']
+  },
+  {
+    desc: 'A tool-calling planner turns the question into an explicit sequence of calls against the plug-in agent-skills framework.',
+    chips: ['Tool calling', 'Planner / executor'],
+    nodes: ['intent', 'planner', 'llm'],
+    edges: ['intent-planner', 'llm-planner']
+  },
+  {
+    desc: 'The executor runs purpose-built, pre-validated metric tools over streaming SQL (RisingWave on Kafka) — no free-form LLM-generated SQL, so no injection surface. Redis handles checkpointing and caching.',
+    chips: ['Metric tools', 'RisingWave', 'Kafka', 'Redis'],
+    nodes: ['planner', 'executor', 'tools', 'kafka', 'redis'],
+    edges: ['planner-executor', 'executor-tools', 'tools-kafka', 'tools-redis']
+  },
+  {
+    desc: 'Azure-hosted LLM services (PepGenX) compose the tool results into a single grounded answer.',
+    chips: ['Azure OpenAI / PepGenX'],
+    nodes: ['tools', 'synth', 'llm'],
+    edges: ['tools-synth', 'llm-synth']
+  },
+  {
+    desc: 'A deterministic critique stage checks the draft before it is released — repeatable and auditable.',
+    chips: ['Deterministic checks'],
+    nodes: ['synth', 'critique'],
+    edges: ['synth-critique']
+  },
+  {
+    desc: 'An executive summary streams back over Server-Sent Events from FastAPI on AKS, with traces and telemetry in Cosmos DB.',
+    chips: ['FastAPI', 'SSE', 'AKS', 'Cosmos DB'],
+    nodes: ['critique', 'summary', 'cosmos', 'client'],
+    edges: ['critique-summary', 'summary-cosmos', 'summary-client']
+  }
+];
+
+(function initArchitecture() {
+  const section = $('#architecture');
+  const stepper = $('#arch-stepper');
+  const tabs = $$('[role="tab"]', stepper);
+  const panel = $('#arch-panel');
+  const panelK = $('#arch-panel-k');
+  const panelDesc = $('#arch-panel-desc');
+  const panelChips = $('#arch-panel-chips');
+  const svg = $('#arch-svg');
+  const dashes = $$('#arch-progress li');
+  const STAGE_MS = 5200;
+  let current = 0;
+  let timer = null;
+  let inView = false;
+  let hovering = false;
+  let focusWithin = false;
+  let userStopped = false;
+  let swapTimer = null;
+
+  section.style.setProperty('--stage-ms', `${STAGE_MS}ms`);
+
+  function highlight(i) {
+    const s = STAGES[i];
+    $$('.node', svg).forEach(n => n.classList.toggle('is-active', s.nodes.includes(n.dataset.node)));
+    $$('.edge', svg).forEach(e => e.classList.toggle('is-active', s.edges.includes(e.dataset.edge)));
   }
 
-  // Active link
-  let current = '';
-  sections.forEach(section => {
-    const sectionTop = section.offsetTop;
-    const sectionHeight = section.clientHeight;
-    if (window.scrollY >= (sectionTop - sectionHeight / 3)) {
-      current = section.getAttribute('id');
+  function renderPanel(i) {
+    const s = STAGES[i];
+    panelK.textContent = `Stage ${String(i + 1).padStart(2, '0')} / ${String(STAGES.length).padStart(2, '0')}`;
+    panelDesc.textContent = s.desc;
+    panelChips.innerHTML = s.chips.map(c => `<li>${esc(c)}</li>`).join('');
+  }
+
+  function setStage(i, { focus = false } = {}) {
+    current = (i + STAGES.length) % STAGES.length;
+    tabs.forEach((t, idx) => {
+      const on = idx === current;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+    });
+    panel.setAttribute('aria-labelledby', tabs[current].id);
+    if (focus) tabs[current].focus();
+
+    // Restart the dash progress animation on the active stage
+    dashes.forEach((d, idx) => {
+      d.classList.remove('is-active');
+      d.classList.toggle('is-done', idx < current);
+    });
+    void section.offsetWidth;
+    dashes[current].classList.add('is-active');
+
+    highlight(current);
+    clearTimeout(swapTimer);
+    if (root.classList.contains('motion')) {
+      panel.classList.add('is-swapping');
+      swapTimer = setTimeout(() => { renderPanel(current); panel.classList.remove('is-swapping'); }, 180);
+    } else {
+      renderPanel(current);
     }
+    schedule();
+  }
+
+  // Auto-advance only while in view, not hovered/focused, motion allowed
+  function schedule() {
+    clearTimeout(timer);
+    const running = !userStopped && inView && !hovering && !focusWithin && !reducedMotion.matches;
+    section.classList.toggle('is-auto', !userStopped && !reducedMotion.matches);
+    section.classList.toggle('is-paused', !running);
+    if (running) timer = setTimeout(() => setStage(current + 1), STAGE_MS);
+  }
+
+  function userSelect(i, focus) {
+    userStopped = true; // explicit choice stops the carousel for good
+    setStage(i, { focus });
+  }
+
+  tabs.forEach((tab, idx) => {
+    tab.addEventListener('click', () => userSelect(idx, false));
+    tab.addEventListener('keydown', e => {
+      const map = { ArrowDown: current + 1, ArrowRight: current + 1, ArrowUp: current - 1, ArrowLeft: current - 1, Home: 0, End: STAGES.length - 1 };
+      if (!(e.key in map)) return;
+      e.preventDefault();
+      userSelect(map[e.key], true);
+    });
   });
 
-  navItems.forEach(item => {
-    item.classList.remove('active');
-    if (item.getAttribute('href') === `#${current}`) {
-      item.classList.add('active');
-    }
+  // Clicking a node jumps to the first stage that features it
+  $$('.node', svg).forEach(node => {
+    node.style.cursor = 'pointer';
+    node.addEventListener('click', () => {
+      const idx = STAGES.findIndex(s => s.nodes.includes(node.dataset.node));
+      if (idx > -1) userSelect(idx, false);
+    });
   });
-});
 
-// Mobile Menu
-menuToggle.addEventListener('click', () => {
-  const isOpen = navLinks.classList.toggle('open');
-  menuToggle.classList.toggle('open');
-  menuToggle.setAttribute('aria-expanded', isOpen);
-});
-
-navLinks.querySelectorAll('a').forEach(link => {
-  link.addEventListener('click', () => {
-    navLinks.classList.remove('open');
-    menuToggle.classList.remove('open');
-    menuToggle.setAttribute('aria-expanded', 'false');
+  section.addEventListener('mouseenter', () => { hovering = true; schedule(); });
+  section.addEventListener('mouseleave', () => { hovering = false; schedule(); });
+  section.addEventListener('focusin', () => { focusWithin = true; schedule(); });
+  section.addEventListener('focusout', e => {
+    if (!section.contains(e.relatedTarget)) { focusWithin = false; schedule(); }
   });
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(entries => {
+      inView = entries[0].isIntersecting;
+      schedule();
+    }, { threshold: 0.35 }).observe($('.arch__grid', section));
+  }
+  reducedMotion.addEventListener('change', schedule);
+
+  highlight(0);
+  schedule();
+})();
+
+/* --------------------------------------------------------------------------
+   02 / Capabilities — scroll-driven horizontal rail (desktop only)
+   -------------------------------------------------------------------------- */
+const cap = {
+  section: $('#capabilities'),
+  viewport: $('#cap-viewport'),
+  track: $('#cap-track'),
+  cards: $$('.cap-card'),
+  tabs: $$('#cap-tabs button'),
+  mq: window.matchMedia('(min-width: 1024px) and (min-height: 640px)'),
+  distance: 0,
+  active: -1,
+  rail: false
+};
+
+function measureRail() {
+  const want = cap.mq.matches && !reducedMotion.matches;
+  cap.rail = want;
+  cap.section.classList.toggle('is-rail', want);
+  if (!want) {
+    cap.section.style.height = '';
+    cap.track.style.transform = '';
+    cap.cards.forEach(c => c.classList.remove('is-active'));
+    cap.active = -1;
+    return;
+  }
+  cap.distance = Math.max(0, cap.track.scrollWidth - cap.viewport.clientWidth);
+  cap.section.style.height = `${window.innerHeight + cap.distance}px`;
+  cap.active = -1;
+  updateRail(window.innerHeight);
+}
+
+function railProgress() {
+  const rect = cap.section.getBoundingClientRect();
+  return cap.distance > 0 ? clamp(-rect.top / cap.distance, 0, 1) : 0;
+}
+
+function updateRail(vh) {
+  if (!cap.rail) return;
+  const rect = cap.section.getBoundingClientRect();
+  if (rect.bottom < -vh || rect.top > vh * 2) return;
+  const p = railProgress();
+  cap.track.style.transform = `translate3d(${(-p * cap.distance).toFixed(1)}px, 0, 0)`;
+  const idx = Math.round(p * (cap.cards.length - 1));
+  if (idx !== cap.active) {
+    cap.active = idx;
+    cap.cards.forEach((c, i) => c.classList.toggle('is-active', i === idx));
+    cap.tabs.forEach((t, i) => {
+      if (i === idx) t.setAttribute('aria-current', 'true');
+      else t.removeAttribute('aria-current');
+    });
+  }
+}
+
+function scrollToCap(i) {
+  if (cap.rail) {
+    const top = cap.section.getBoundingClientRect().top + window.scrollY;
+    const y = top + (i / (cap.cards.length - 1)) * cap.distance;
+    window.scrollTo({ top: Math.round(y) + 1, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+  } else {
+    cap.cards[i].scrollIntoView({ block: 'center' });
+  }
+}
+
+cap.tabs.forEach((t, i) => t.addEventListener('click', () => scrollToCap(i)));
+// Keyboard users tabbing into an off-screen card: bring it into the rail
+cap.cards.forEach((card, i) => card.addEventListener('focusin', () => {
+  if (cap.rail && cap.active !== i) {
+    const top = cap.section.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({ top: Math.round(top + (i / (cap.cards.length - 1)) * cap.distance) + 1 });
+  }
+}));
+
+cap.mq.addEventListener('change', measureRail);
+reducedMotion.addEventListener('change', measureRail);
+
+/* --------------------------------------------------------------------------
+   Scroll / resize loop
+   -------------------------------------------------------------------------- */
+let ticking = false;
+
+function frame() {
+  ticking = false;
+  const vh = window.innerHeight;
+  updateHeader();
+  updateStatement(vh);
+  updateRail(vh);
+}
+
+function requestFrame() {
+  if (!ticking) { ticking = true; requestAnimationFrame(frame); }
+}
+
+let resizeTimer = null;
+window.addEventListener('scroll', requestFrame, { passive: true });
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => { measureRail(); requestFrame(); }, 120);
+}, { passive: true });
+
+measureRail();
+frame();
+// Web fonts change card widths; re-measure once they're in
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measureRail(); requestFrame(); });
+
+/* --------------------------------------------------------------------------
+   03 / Engagements — accordion
+   -------------------------------------------------------------------------- */
+function setEng(li, open) {
+  const btn = $('.eng__btn', li);
+  if (open) li.setAttribute('data-open', '');
+  else li.removeAttribute('data-open');
+  btn.setAttribute('aria-expanded', String(open));
+}
+
+$$('.eng').forEach(li => {
+  $('.eng__btn', li).addEventListener('click', () => setEng(li, !li.hasAttribute('data-open')));
 });
 
-// Load Projects
+// Links elsewhere on the page (capability cards) open their engagement
+$$('[data-open-eng]').forEach(a => a.addEventListener('click', () => {
+  const li = document.getElementById(a.dataset.openEng);
+  if (li) setEng(li, true);
+}));
+
+/* --------------------------------------------------------------------------
+   05 / Projects — portfolio.json
+   -------------------------------------------------------------------------- */
+const workGrid = $('#work-grid');
+const projFilters = $('#proj-filters');
+const projCount = $('#proj-count');
+const CATEGORY_LABELS = { genai: 'GenAI', tooling: 'Tooling', backend: 'Backend', personal: 'Personal' };
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function projectYear(repo) {
+  const t = repo.timeline || {};
+  if (t.startDate) return String(t.startDate).slice(0, 4);
+  if (t.lastCommit) return String(t.lastCommit).slice(0, 4);
+  return '—';
+}
+
+function projectCard(repo, i) {
+  const status = repo.status === 'active' ? 'Active' : repo.status === 'wip' ? 'In progress' : 'Archived';
+  const statusMod = repo.status === 'active' ? ' proj-card__status--active' : '';
+  const cat = repo.category || '';
+  const tags = [...(repo.techStack || []), ...(repo.tags || [])];
+  const url = repo.links && repo.links.github;
+  const idx = String(i + 1).padStart(2, '0');
+  return `
+    <article class="proj-card" data-cat="${esc(cat)}" data-reveal>
+      <div class="proj-card__meta">
+        <span class="proj-card__status${statusMod}">${status}</span>
+        ${repo.featured ? '<span class="proj-card__feat">Featured</span>' : ''}
+        ${cat ? `<span>${esc(CATEGORY_LABELS[cat] || cat)}</span>` : ''}
+        <span class="proj-card__year">${esc(projectYear(repo))}</span>
+      </div>
+      <h3 class="proj-card__title">${esc(repo.name)}</h3>
+      <p class="proj-card__desc">${esc(repo.description || '')}</p>
+      ${tags.length ? `<ul class="chips">${tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+      ${url ? `<a class="text-link proj-card__link" href="${esc(url)}" target="_blank" rel="noopener" aria-label="View ${esc(repo.name)} on GitHub">View <span class="arrow" aria-hidden="true">↗</span></a>` : ''}
+      <span class="ghost-num" aria-hidden="true">${idx}</span>
+    </article>`;
+}
+
+function setCount(shown, total) {
+  projCount.textContent = shown === total
+    ? `${String(total).padStart(2, '0')} projects`
+    : `Showing ${String(shown).padStart(2, '0')} of ${String(total).padStart(2, '0')}`;
+}
+
+function renderFilters(visible) {
+  const counts = {};
+  visible.forEach(r => { if (r.category) counts[r.category] = (counts[r.category] || 0) + 1; });
+  const cats = Object.keys(CATEGORY_LABELS).filter(c => counts[c])
+    .concat(Object.keys(counts).filter(c => !(c in CATEGORY_LABELS)));
+  if (cats.length < 2) return;
+
+  projFilters.innerHTML = [`<button type="button" class="filter" data-filter="all" aria-pressed="true">All<sup>${visible.length}</sup></button>`]
+    .concat(cats.map(c => `<button type="button" class="filter" data-filter="${esc(c)}" aria-pressed="false">${esc(CATEGORY_LABELS[c] || c)}<sup>${counts[c]}</sup></button>`))
+    .join('');
+  projFilters.hidden = false;
+
+  projFilters.addEventListener('click', e => {
+    const btn = e.target.closest('.filter');
+    if (!btn) return;
+    const f = btn.dataset.filter;
+    $$('.filter', projFilters).forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    let shown = 0;
+    $$('.proj-card', workGrid).forEach(card => {
+      const on = f === 'all' || card.dataset.cat === f;
+      card.hidden = !on;
+      if (on) shown++;
+    });
+    setCount(shown, visible.length);
+  });
+}
+
 async function loadProjects() {
   try {
     const res = await fetch('portfolio.json');
-    if (!res.ok) throw new Error("Not found");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     const repos = data.repos || [];
-    const shuffle = arr => arr.slice().sort(() => Math.random() - 0.5);
-    const featured = shuffle(repos.filter(r => r.featured));
-    const rest = shuffle(repos.filter(r => !r.featured));
-    repos.length = 0;
-    repos.push(...featured, ...rest);
+    // Featured first, shuffled within each group; hidden repos skipped
+    const visible = repos.filter(r => !(r.visibility && !r.visibility.showOnPortfolio));
+    const ordered = [...shuffle(visible.filter(r => r.featured)), ...shuffle(visible.filter(r => !r.featured))];
+    if (!ordered.length) throw new Error('No projects to show');
 
-    if (repos.length === 0) throw new Error("Empty repos");
-
-    workGrid.innerHTML = repos.map(repo => {
-      if (repo.visibility && !repo.visibility.showOnPortfolio) return '';
-
-      const isFeatured = repo.featured ? 'featured' : '';
-      const featureBadge = repo.featured ? `<span style="display:inline-flex;align-items:center;gap:4px;color:var(--warning);margin-right:8px;"><i data-lucide="star" style="width:12px;height:12px;color:var(--warning)"></i> Featured</span>` : '';
-      const year = repo.timeline?.startDate ? repo.timeline.startDate.split('-')[0] : '2026';
-      const statusClass = repo.status === 'active' ? 'active' : repo.status === 'wip' ? 'wip' : '';
-      const statusText = repo.status || 'Archived';
-
-      const allTags = [...(repo.techStack || []), ...(repo.tags || [])];
-      const tags = allTags.map(t => {
-        const iconClass = DEVICON_MAP[t];
-        const iconHtml = iconClass ? `<i class="${iconClass}" style="margin-right:4px;"></i>` : '';
-        return `<span class="tag" style="display:inline-flex;align-items:center;">${iconHtml}${t}</span>`;
-      }).join('');
-      const repoUrl = repo.links?.github || '#';
-
-      return `
-            <article class="card ${isFeatured} reveal">
-              <a href="${repoUrl}" target="_blank" rel="noopener" class="card-link" aria-label="View ${repo.name}"></a>
-              <div class="card-header">
-                <div class="status ${statusClass}">${featureBadge}<span class="status-dot"></span>${statusText}</div>
-                <div class="year">${year}</div>
-              </div>
-              <h3 class="card-title">${repo.name}</h3>
-              <p class="card-desc">${repo.description || ''}</p>
-              <div class="card-tags">${tags}</div>
-              <div class="card-cta" aria-hidden="true">View Project <i data-lucide="arrow-right" class="cta-icon" style="width:14px;height:14px;vertical-align:middle;"></i></div>
-            </article>
-          `;
-    }).join('');
-
-    // Re-observe new cards
-    document.querySelectorAll('.card.reveal').forEach(el => observer.observe(el));
-    setupCardSpotlight();
-    if (window.lucide) lucide.createIcons();
-
-    // Populate language bars from loaded repo data
+    workGrid.innerHTML = ordered.map(projectCard).join('');
+    setCount(ordered.length, ordered.length);
+    renderFilters(ordered);
+    observeReveals(workGrid);
     renderLanguages(repos);
-
   } catch (err) {
+    console.warn('Projects failed to load:', err);
     workGrid.innerHTML = `
-          <article class="card reveal">
-            <div class="card-header">
-              <div class="status active"><span class="status-dot"></span>Active</div>
-              <div class="year">2024</div>
-            </div>
-            <h3 class="card-title">
-              <a href="#" class="card-link">Project Placeholder</a>
-            </h3>
-            <p class="card-desc">portfolio.json not found or invalid. Please ensure the file exists in the root directory.</p>
-            <div class="card-tags"><span class="tag">HTML</span><span class="tag">CSS</span></div>
-            <div class="card-cta" aria-hidden="true">View Project ↗</div>
-          </article>
-        `;
-    document.querySelectorAll('.card.reveal').forEach(el => observer.observe(el));
+      <div class="fallback" role="alert">
+        <p>Couldn’t load the project list (portfolio.json). The code is all on GitHub.</p>
+        <a class="text-link" href="https://github.com/deb007" target="_blank" rel="noopener">Browse repositories <span class="arrow" aria-hidden="true">↗</span></a>
+      </div>`;
+    projCount.textContent = '';
+    const langs = $('#gh-langs');
+    if (langs) langs.innerHTML = '<p class="label">Top languages &amp; tools</p><p class="fallback">Unavailable — project data failed to load.</p>';
   }
 }
 
-// ── GitHub Activity ──────────────────────────────────────────────────────────
-
+/* --------------------------------------------------------------------------
+   06 / Open source — GitHub activity
+   -------------------------------------------------------------------------- */
 async function loadGitHubActivity() {
   const username = 'deb007';
-  const calEl = document.getElementById('gh-calendar');
-  const tooltipEl = document.getElementById('gh-tooltip');
+  const calEl = $('#gh-calendar');
+  const tooltipEl = $('#gh-tooltip');
 
   try {
     const [contribRes, userRes] = await Promise.all([
@@ -242,8 +678,8 @@ async function loadGitHubActivity() {
 
     if (userRes.ok) {
       const user = await userRes.json();
-      const el = document.getElementById('gh-repos-count');
-      if (el) el.textContent = user.public_repos;
+      const el = $('#gh-repos-count');
+      if (el && user.public_repos != null) el.textContent = user.public_repos;
     }
 
     if (contribRes.ok) {
@@ -251,11 +687,11 @@ async function loadGitHubActivity() {
       const contribs = data.contributions || [];
       const total = contribs.reduce((s, d) => s + d.count, 0);
 
-      const countEl = document.getElementById('gh-contrib-count');
+      const countEl = $('#gh-contrib-count');
       if (countEl) countEl.textContent = total.toLocaleString();
 
       renderContribAnalytics(contribs);
-      renderContribCalendar(calEl, contribs, tooltipEl);
+      renderContribCalendar(calEl, contribs, tooltipEl, total);
     } else {
       showCalendarFallback(calEl, username);
     }
@@ -281,53 +717,35 @@ function renderContribAnalytics(contributions) {
 
   // Avg per active day
   const avg = activeDays.length > 0 ? (totalContribs / activeDays.length).toFixed(1) : '0';
-  const avgEl = document.getElementById('gh-avg-count');
+  const avgEl = $('#gh-avg-count');
   if (avgEl) avgEl.textContent = avg;
 
   // Best day of week by total contribution count
   const dowCounts = Array(7).fill(0);
-  activeDays.forEach(d => {
-    const dow = new Date(d.date + 'T12:00:00').getDay();
-    dowCounts[dow] += d.count;
-  });
-  const bestDow = dowCounts.indexOf(Math.max(...dowCounts));
-  const dowEl = document.getElementById('gh-bestdow');
-  if (dowEl) dowEl.textContent = DOW_NAMES[bestDow];
+  activeDays.forEach(d => { dowCounts[new Date(d.date + 'T12:00:00').getDay()] += d.count; });
+  const dowEl = $('#gh-bestdow');
+  if (dowEl && activeDays.length) dowEl.textContent = DOW_NAMES[dowCounts.indexOf(Math.max(...dowCounts))];
 
   // Best month by total contribution count
   const monthCounts = Array(12).fill(0);
-  activeDays.forEach(d => {
-    const month = new Date(d.date + 'T12:00:00').getMonth();
-    monthCounts[month] += d.count;
-  });
-  const bestMonth = monthCounts.indexOf(Math.max(...monthCounts));
-  const monthEl = document.getElementById('gh-bestmonth');
-  if (monthEl) monthEl.textContent = MONTH_NAMES[bestMonth];
+  activeDays.forEach(d => { monthCounts[new Date(d.date + 'T12:00:00').getMonth()] += d.count; });
+  const monthEl = $('#gh-bestmonth');
+  if (monthEl && activeDays.length) monthEl.textContent = MONTH_NAMES[monthCounts.indexOf(Math.max(...monthCounts))];
 
-  // Active weeks: number of ISO weeks (out of the last 52) with ≥1 contribution
+  // Active weeks: weeks (out of the last 52) with ≥1 contribution
   const weekSet = new Set();
   activeDays.forEach(d => {
-    // Get Monday of the week containing this date
     const dt = new Date(d.date + 'T12:00:00');
-    const day = dt.getDay(); // 0=Sun
     const monday = new Date(dt);
-    monday.setDate(dt.getDate() - ((day + 6) % 7));
+    monday.setDate(dt.getDate() - ((dt.getDay() + 6) % 7));
     weekSet.add(localDateStr(monday));
   });
-  const activeWeeksEl = document.getElementById('gh-activeweeks');
+  const activeWeeksEl = $('#gh-activeweeks');
   if (activeWeeksEl) activeWeeksEl.textContent = `${weekSet.size} / 52`;
 }
 
-function renderContribCalendar(container, contributions, tooltipEl) {
+function renderContribCalendar(container, contributions, tooltipEl, total) {
   if (!container) return;
-
-  const LEVEL_COLORS = [
-    'var(--bg-overlay)',
-    'var(--cal-l1)',
-    'var(--cal-l2)',
-    'var(--cal-l3)',
-    'var(--accent)'
-  ];
 
   const map = Object.fromEntries(contributions.map(d => [d.date, d]));
   const today = new Date();
@@ -370,142 +788,93 @@ function renderContribCalendar(container, contributions, tooltipEl) {
   }
 
   const gridWidth = weeks.length * STEP - GAP;
+  // Drop a first label that would collide with the second
+  if (monthLabels.length > 1 && monthLabels[1].col - monthLabels[0].col < 3) monthLabels.shift();
 
   container.innerHTML = `
-    <div class="calendar-wrap">
-      <div class="cal-months" style="min-width:${gridWidth}px">
-        ${monthLabels.map(ml =>
-    `<span class="cal-month-lbl" style="left:${ml.col * STEP}px">${ml.label}</span>`
-  ).join('')}
+    <div class="calendar-wrap" role="img" aria-label="${(total ?? 0).toLocaleString()} GitHub contributions in the last year">
+      <div class="cal-months" style="width:${gridWidth}px" aria-hidden="true">
+        ${monthLabels.map(ml => `<span class="cal-month-lbl" style="left:${ml.col * STEP}px">${ml.label}</span>`).join('')}
       </div>
-      <div class="calendar-grid" style="min-width:${gridWidth}px">
-        ${weeks.map(week =>
-    `<div class="cal-week">${week.map(day =>
-      `<div class="cal-day${day.future ? ' cal-day--future' : ''}"
-              style="background:${day.future ? 'transparent' : LEVEL_COLORS[day.level]}"
-              ${!day.future ? `data-date="${day.date}" data-count="${day.count}"` : ''}></div>`
-    ).join('')}</div>`
-  ).join('')}
+      <div class="calendar-grid" style="width:${gridWidth}px" aria-hidden="true">
+        ${weeks.map(week => `<div class="cal-week">${week.map(day => day.future
+          ? '<div class="cal-day cal-day--future"></div>'
+          : `<div class="cal-day" data-level="${day.level}" data-date="${day.date}" data-count="${day.count}"></div>`
+        ).join('')}</div>`).join('')}
       </div>
-      <div class="calendar-legend">
+      <div class="calendar-legend" aria-hidden="true">
         <span class="cal-legend-txt">Less</span>
-        ${LEVEL_COLORS.map(c =>
-    `<div class="cal-day cal-day--legend" style="background:${c}"></div>`
-  ).join('')}
+        ${[0, 1, 2, 3, 4].map(l => `<div class="cal-day" data-level="${l}"></div>`).join('')}
         <span class="cal-legend-txt">More</span>
       </div>
     </div>`;
 
-  // Hover tooltips
-  if (tooltipEl) {
-    container.querySelectorAll('.cal-day[data-date]').forEach(cell => {
-      cell.addEventListener('mouseenter', () => {
-        const count = +cell.dataset.count;
-        const ds = cell.dataset.date;
-        const fmt = new Date(ds + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        tooltipEl.textContent = count > 0
-          ? `${count} contribution${count !== 1 ? 's' : ''} on ${fmt}`
-          : `No contributions on ${fmt}`;
-        tooltipEl.style.display = 'block';
-      });
-      cell.addEventListener('mousemove', e => {
-        tooltipEl.style.left = (e.clientX + 14) + 'px';
-        tooltipEl.style.top = (e.clientY - 42) + 'px';
-      });
-      cell.addEventListener('mouseleave', () => {
-        tooltipEl.style.display = 'none';
-      });
-    });
-  }
+  // Hover tooltips (one delegated listener; clamped inside the viewport)
+  if (!tooltipEl) return;
+  const grid = $('.calendar-grid', container);
+  grid.addEventListener('mouseover', e => {
+    const cell = e.target.closest('.cal-day[data-date]');
+    if (!cell) return;
+    const count = +cell.dataset.count;
+    const fmt = new Date(cell.dataset.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    tooltipEl.textContent = count > 0 ? `${count} contribution${count !== 1 ? 's' : ''} on ${fmt}` : `No contributions on ${fmt}`;
+    tooltipEl.style.display = 'block';
+  });
+  grid.addEventListener('mousemove', e => {
+    const w = tooltipEl.offsetWidth;
+    tooltipEl.style.left = `${clamp(e.clientX + 14, 8, window.innerWidth - w - 8)}px`;
+    tooltipEl.style.top = `${e.clientY - 42}px`;
+  });
+  grid.addEventListener('mouseleave', () => { tooltipEl.style.display = 'none'; });
 }
 
 function showCalendarFallback(container, username) {
   if (!container) return;
   container.innerHTML = `
-    <div class="calendar-wrap" style="text-align:center;padding:32px 24px;">
-      <p style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--text-muted);margin-bottom:12px;">Could not load contribution calendar.</p>
-      <a href="https://github.com/${username}" target="_blank" rel="noopener"
-        style="color:var(--accent);font-family:var(--font-mono);font-size:var(--text-sm);">View activity on GitHub ↗</a>
+    <div class="fallback" role="status">
+      <p>Could not load contribution calendar.</p>
+      <a class="text-link" href="https://github.com/${username}" target="_blank" rel="noopener">View activity on GitHub <span class="arrow" aria-hidden="true">↗</span></a>
     </div>`;
 }
 
-const LANG_COLORS = {
-  'Python': '#3572A5',
-  'TypeScript': '#2b7489',
-  'JavaScript': '#f1e05a',
-  'Node.js': '#41873F',
-  'FastAPI': '#059669',
-  'React': '#61dafb',
-  'React Native': '#61dafb',
-  'PostgreSQL': '#336791',
-  'Docker': '#2496ED',
-  'Azure OpenAI': '#0078d4',
-  'Supabase': '#3ECF8E',
-  'TailwindCSS': '#38bdf8'
-};
-
 function renderLanguages(repos) {
-  const langsEl = document.getElementById('gh-langs');
+  const langsEl = $('#gh-langs');
   if (!langsEl || !repos.length) return;
 
   const counts = {};
+  let n = 0;
   repos.forEach(r => {
     if (r.visibility && r.visibility.showOnPortfolio === false) return;
+    n++;
     (r.techStack || []).forEach(t => { counts[t] = (counts[t] || 0) + 1; });
   });
 
   const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8);
   if (!sorted.length) return;
-
   const max = sorted[0][1];
 
   langsEl.innerHTML = `
-    <div class="gh-langs-title">Top Languages &amp; Tools</div>
+    <p class="label">Top languages &amp; tools — across ${n} projects</p>
     <div class="lang-bars">
-      ${sorted.map(([name, count]) => {
-    const pct = Math.round((count / max) * 100);
-    const color = LANG_COLORS[name] || 'var(--accent)';
-    return `<div class="lang-row">
-          <span class="lang-name">${name}</span>
-          <div class="lang-bar-bg">
-            <div class="lang-bar-fill" data-w="${pct}" style="background:${color}"></div>
-          </div>
+      ${sorted.map(([name, count]) => `
+        <div class="lang-row">
+          <span class="lang-name">${esc(name)}</span>
+          <div class="lang-bar-bg" aria-hidden="true"><div class="lang-bar-fill" data-w="${Math.round((count / max) * 100)}"></div></div>
           <span class="lang-pct">${count} repo${count !== 1 ? 's' : ''}</span>
-        </div>`;
-  }).join('')}
+        </div>`).join('')}
     </div>`;
 
-  // Animate bars when section scrolls into view
+  // Grow the bars when the block scrolls into view
+  const fill = () => $$('.lang-bar-fill', langsEl).forEach(bar => { bar.style.width = `${bar.dataset.w}%`; });
+  if (!('IntersectionObserver' in window)) { fill(); return; }
   const barsObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        langsEl.querySelectorAll('.lang-bar-fill').forEach(bar => {
-          bar.style.width = bar.dataset.w + '%';
-        });
-        barsObserver.unobserve(entry.target);
-      }
-    });
+    if (entries.some(e => e.isIntersecting)) { fill(); barsObserver.disconnect(); }
   }, { threshold: 0.1 });
   barsObserver.observe(langsEl);
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-
-// Card Spotlight
-function setupCardSpotlight() {
-  const cards = document.querySelectorAll('.card');
-  cards.forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      card.style.setProperty('--mx', `${x}px`);
-      card.style.setProperty('--my', `${y}px`);
-    });
-  });
-}
-
-// Initialize
+/* --------------------------------------------------------------------------
+   Init
+   -------------------------------------------------------------------------- */
 loadProjects();
 loadGitHubActivity();
-if (window.lucide) lucide.createIcons();
