@@ -10,7 +10,9 @@
     "preview": "astro preview",
     "privacy": "node scripts/privacy.mjs",
     "validate:portfolio-json": "node scripts/validate-portfolio-json.mjs",
-    "check": "npm run build && npm run privacy && npm run validate:portfolio-json"
+    "check": "npm run build && npm run privacy && npm run validate:portfolio-json",
+    "build:globe-data": "node scripts/build-globe-data.mjs",
+    "test:motion": "npm run build && playwright test tests/motion.spec.ts"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
@@ -20,6 +22,9 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "@playwright/test": "^1.65.0",
+    "@types/pngjs": "^6.0.5",
+    "pngjs": "^7.0.0",
     "typescript": "^5.9.0"
   },
   "overrides": {
