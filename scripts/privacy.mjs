@@ -12,6 +12,13 @@ const walk = (d) => readdirSync(d).flatMap((n) => {
 const files = walk(DIST).filter((f) => ['.html', '.css', '.js', '.json', '.xml', '.txt', '.svg', '.map'].includes(extname(f)));
 const read = (f) => readFileSync(f, 'utf8');
 const findings = [];
+// Banned copy and unverified claims (visible HTML only).
+const BANNED = [
+  /A Passion for Building/i, /Turning Technology into Business Value/i, /Explore the possibilities together/i,
+  /Journey of Innovation/i, /Architecting for the Next Generation/i, /\bBusiness Value\b/i, /\bImpact\b/,
+  /ChatGPT/, /Your Apps/, /Enterprise Data/, /Enterprise Systems/, /APIs, APIs/, /Open Source/i,
+  /\b\d+\+? (MCP )?tools\b/i, /Professional experience/i,
+];
 
 // Plain contact values are rebuilt from the shards at scan time, so this file
 // never holds them. Joined and decoded values, and their base64 forms, must not appear.
@@ -69,6 +76,14 @@ for (const f of files) {
   for (const h of hidden) for (const s of h.s) if (s && t.includes(s)) findings.push(`${f}: text from ${h.what}`);
   if (extname(f) === '.html' || f.endsWith('sitemap-0.xml')) for (const h of flagHidden) for (const s of h.text) if (t.includes(s)) findings.push(`${f}: "${s}" present but ${h.route} flag is off`);
   if (/lorem ipsum|coming soon/i.test(t)) findings.push(`${f}: placeholder text`);
+  if (/fonts\.googleapis|fonts\.gstatic/i.test(t)) findings.push(`${f}: third-party font request`);
+  if (extname(f) === '.html') {
+    const vis = t.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '');
+    for (const re of BANNED) if (re.test(vis)) findings.push(`${f}: banned phrase ${re}`);
+    if (/\/(index\.html)$/.test(f) && (f === 'dist/index.html' || f.includes('projects/athena'))) {
+      if (/ChatGPT|Gemini/.test(vis)) findings.push(`${f}: Athena diagram names a client that is not documented`);
+    }
+  }
 }
 // Approval gate, restated on the output.
 for (const f of readdirSync('content/projects').filter((n) => n.endsWith('.json'))) {
