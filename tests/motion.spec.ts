@@ -316,3 +316,124 @@ test.describe('motion', () => {
     }
   });
 });
+
+test.describe('content stage', () => {
+  test('15. expertise: one row open at a time, aria-expanded, lines to projects drawn', async ({ page }) => {
+    await page.goto('/');
+    const btns = page.locator('.exp-btn');
+    expect(await btns.count()).toBe(4);
+    const open = () => page.locator('.exp-btn[aria-expanded="true"]').count();
+    expect(await open()).toBe(1);
+    await btns.nth(2).scrollIntoViewIfNeeded();
+    await btns.nth(2).click();
+    expect(await open()).toBe(1);
+    await expect(btns.nth(2)).toHaveAttribute('aria-expanded', 'true');
+    await page.waitForTimeout(1500);
+    const lines = await page.locator('.exp-line').count();
+    const offset = await page.evaluate(() => getComputedStyle(document.querySelector('.exp-line')!).strokeDashoffset);
+    console.log(`expertise lines=${lines} dashoffset=${offset}`);
+    expect(lines).toBe(4); // Enterprise Architecture is exercised in four projects
+    expect(parseFloat(offset)).toBe(0);
+    // keyboard: focus opens a row
+    await btns.nth(3).focus();
+    await expect(btns.nth(3)).toHaveAttribute('aria-expanded', 'true');
+    expect(await open()).toBe(1);
+  });
+
+  test('15b. expertise lines are drawn instantly under reduced motion', async ({ browser }) => {
+    const ctx = await browser.newContext({ reducedMotion: 'reduce', colorScheme: 'dark', viewport: { width: 1440, height: 900 } });
+    const page = await ctx.newPage();
+    await page.goto('/');
+    await page.waitForTimeout(700);
+    const r = await page.evaluate(() => ({ n: document.querySelectorAll('.exp-line').length, off: getComputedStyle(document.querySelector('.exp-line')!).strokeDashoffset, tr: getComputedStyle(document.querySelector('.exp-line')!).transitionDuration }));
+    console.log('reduced expertise', r);
+    expect(r.n).toBeGreaterThan(0); expect(parseFloat(r.off)).toBe(0); expect(r.tr).toBe('0s');
+    await ctx.close();
+  });
+
+  test('16. Athena packets move while visible, stop when paused or reduced', async ({ page, browser }) => {
+    await page.goto('/');
+    const fig = page.locator('.lead [data-flow]');
+    await fig.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(600);
+    const pos = () => page.evaluate(() => [...document.querySelectorAll('.lead .fl-pkt')].map((c) => getComputedStyle(c).offsetDistance + '|' + getComputedStyle(c).opacity).join(','));
+    const a = await pos(); await page.waitForTimeout(700); const b = await pos();
+    console.log('packets', a.slice(0, 60), '->', b.slice(0, 60));
+    expect(a).not.toBe(b);
+    expect(await page.locator('.lead .fl-pkt').count()).toBeGreaterThan(8);
+    await page.click('#motion-toggle');
+    const c = await pos(); await page.waitForTimeout(500); const d = await pos();
+    expect(c).toBe(d);
+    const ctx = await browser.newContext({ reducedMotion: 'reduce', colorScheme: 'dark', viewport: { width: 1440, height: 900 } });
+    const p2 = await ctx.newPage(); await p2.goto('/');
+    await p2.locator('.lead [data-flow]').scrollIntoViewIfNeeded(); await p2.waitForTimeout(500);
+    const vis = await p2.evaluate(() => getComputedStyle(document.querySelector('.lead .fl-pkt')!).display);
+    expect(vis).toBe('none');
+    await ctx.close();
+  });
+
+  test('17. architecture: play/pause button, notes on focus, all notes visible when reduced', async ({ page, browser }) => {
+    await page.goto('/architecture/');
+    const fig = page.locator('[data-flow]').first();
+    await fig.scrollIntoViewIfNeeded(); await page.waitForTimeout(500);
+    const btn = fig.locator('[data-flow-ctl]');
+    await expect(btn).toHaveAttribute('aria-pressed', 'false');
+    const pos = () => fig.locator('.fl-pkt').first().evaluate((c) => getComputedStyle(c).offsetDistance);
+    const a = await pos(); await page.waitForTimeout(600); const b = await pos();
+    expect(a).not.toBe(b);
+    await btn.click();
+    await expect(btn).toHaveAttribute('aria-pressed', 'true');
+    await expect(btn).toHaveText('Play flow');
+    const c = await pos(); await page.waitForTimeout(500); const d = await pos();
+    expect(c).toBe(d);
+    await btn.click();
+    await expect(btn).toHaveText('Pause flow');
+    await fig.locator('.fl-node').nth(2).focus();
+    await expect(fig.locator('[data-note-bar]')).toContainText('Policy, access control');
+    expect(await page.locator('[data-flow]').count()).toBe(4);
+    const ctx = await browser.newContext({ reducedMotion: 'reduce', colorScheme: 'dark', viewport: { width: 1440, height: 900 } });
+    const p2 = await ctx.newPage(); await p2.goto('/architecture/');
+    expect(await p2.locator('.flow-notes').first().isVisible()).toBe(true);
+    await ctx.close();
+  });
+
+  test('18. project library filter works without reload and announces the count', async ({ page }) => {
+    await page.goto('/projects/');
+    const items = page.locator('.lib li:visible');
+    expect(await items.count()).toBe(7);
+    await page.evaluate(() => ((window as any).__marker = 1));
+    await page.locator('[data-group="category"] .chip', { hasText: 'Agentic AI & MCP' }).click();
+    expect(await items.count()).toBe(3);
+    await expect(page.locator('[data-count]')).toHaveText('Showing 3 of 7 projects');
+    await page.locator('[data-group="type"] .chip', { hasText: 'Prototype' }).click();
+    expect(await items.count()).toBe(1);
+    await expect(page.locator('[data-group="type"] .chip', { hasText: 'Prototype' })).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('[data-group="type"] .chip', { hasText: /^All$/ })).toHaveAttribute('aria-pressed', 'false');
+    expect(await page.evaluate(() => (window as any).__marker)).toBe(1); // no reload
+    expect(await page.locator('[data-count]').getAttribute('aria-live')).toBe('polite');
+  });
+
+  test('19. synthetic charts draw once in view; labelled illustrative; static when reduced', async ({ page, browser }) => {
+    await page.goto('/projects/pfdf/');
+    await page.locator('[data-chart]').scrollIntoViewIfNeeded(); await page.waitForTimeout(2800);
+    await expect(page.locator('[data-chart]')).toContainText('Illustrative, synthetic data');
+    const off = await page.evaluate(() => getComputedStyle(document.querySelector('.ch-a')!).strokeDashoffset);
+    expect(parseFloat(off)).toBe(0);
+    const ctx = await browser.newContext({ reducedMotion: 'reduce', colorScheme: 'dark', viewport: { width: 1440, height: 900 } });
+    const p2 = await ctx.newPage(); await p2.goto('/projects/myinvs/');
+    const r = await p2.evaluate(() => getComputedStyle(document.querySelector('.ch-a')!).strokeDasharray);
+    expect(r).toBe('none');
+    await ctx.close();
+  });
+
+  test('20. default theme is dark even for a light-OS visitor; toggle still works', async ({ browser }) => {
+    const ctx = await browser.newContext({ colorScheme: 'light', viewport: { width: 1440, height: 900 } });
+    const page = await ctx.newPage(); await page.goto('/');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    await page.click('#theme-toggle');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+    await page.reload();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+    await ctx.close();
+  });
+});
