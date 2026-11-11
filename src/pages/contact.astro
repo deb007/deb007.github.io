@@ -4,24 +4,40 @@ import { getProfile } from '../lib/content';
 import { flags } from '../config/flags';
 const p = await getProfile();
 ---
-<Base motif title={`Contact | ${p.name}`} description={`Contact ${p.name}.`}>
+<Base motif title={`Contact | ${p.name}`} description={`Get in touch with ${p.name} about enterprise AI, architecture or the projects on this site.`}>
   <div class="page"><div class="wrap">
-    <h1>Contact</h1>
-    <ul>
-      {flags.linkedin && <li><button class="ctl" type="button" data-reveal="linkedin" data-shards={JSON.stringify(p.contact.linkedin)}>Show LinkedIn</button></li>}
-      <li><a href={p.githubProfile}>GitHub profile</a></li>
-      {flags.email && <li><button class="ctl" type="button" data-reveal="email" data-shards={JSON.stringify(p.contact.email)}>Show email</button></li>}
+    <p class="sec-label">Contact</p>
+    <h1 class="page-h">Let's talk about your AI problem</h1>
+    <p class="lede">The quickest way to reach me is LinkedIn. If you are weighing where AI fits in your architecture, or want to compare notes on agentic systems, send a message with a line or two of context.</p>
+    <ul class="contact-list">
+      {flags.linkedin && (
+        <li>
+          <span class="label">Primary</span>
+          <div class="contact-primary">
+            <button class="btn-solid" type="button" data-reveal="linkedin" data-shards={JSON.stringify(p.contact.linkedin)}>Open LinkedIn</button>
+            <noscript><span>Enable JavaScript to open LinkedIn.</span></noscript>
+          </div>
+        </li>
+      )}
+      {flags.email && (
+        <li>
+          <span class="label">Email</span>
+          <div><button class="ctl" type="button" data-reveal="email" data-shards={JSON.stringify(p.contact.email)}>Show email address</button></div>
+        </li>
+      )}
+      <li><span class="label">Code</span><div><a href={p.githubProfile}>GitHub profile</a></div></li>
     </ul>
-    <p id="reveal-out" aria-live="polite"></p>
+    <p id="reveal-out" aria-live="polite" class="lede"></p>
   </div></div>
   <script is:inline>
     document.querySelectorAll('[data-reveal]').forEach(function (b) {
       b.addEventListener('click', function () {
         var v = atob(JSON.parse(b.dataset.shards).join(''));
+        if (b.dataset.reveal === 'linkedin') { window.open(v, '_blank', 'noopener'); return; }
         var a = document.createElement('a');
-        a.href = b.dataset.reveal === 'email' ? 'mailto:' + v : v;
-        a.textContent = v;
+        a.href = 'mailto:' + v; a.textContent = v;
         b.replaceWith(a);
+        document.getElementById('reveal-out').textContent = 'Email address shown above.';
       });
     });
   </script>

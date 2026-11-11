@@ -1,6 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Flow from '../../components/Flow.astro';
+import Chart from '../../components/Chart.astro';
 import { getApprovedProjects, getProfile } from '../../lib/content';
+import { projectFlows, STATUS } from '../../lib/diagrams';
 
 export async function getStaticPaths() {
   // Only approved projects get a page: the approval gate in code.
@@ -8,22 +11,44 @@ export async function getStaticPaths() {
 }
 const { p } = Astro.props;
 const prof = await getProfile();
+const f = projectFlows[p.diagramRef];
+const chart = p.slug === 'myinvs' ? 'myinvs' : p.slug === 'pfdf' ? 'pfdf' : null;
 ---
 <Base title={`${p.name} | ${prof.name}`} description={p.oneLine}>
-  <div class="page"><div class="wrap">
-    <h1>{p.name}</h1>
-    <p>{p.oneLine}</p>
-    <p>
+  <div class="page proj"><div class="wrap">
+    <p class="sec-label"><a class="more" href="/projects/">Projects</a></p>
+    <h1 class="page-h">{p.name}</h1>
+    <p class="lede">{p.oneLine}</p>
+    <p class="proj-meta">
       <span class="tag">{p.workType}</span>
-      {p.visibility === 'private' && <span class="tag">Private repository</span>}
-      <span class="tag">{p.status}</span>
+      {p.visibility === 'private' && <span class="tag tag-static">Private repository</span>}
+      <span class="tag">{STATUS[p.status]}</span>
       {p.aiAssisted && <span class="tag">AI-assisted build</span>}
     </p>
-    <h2>Problem</h2><p>{p.problem}</p>
-    <h2>What I built</h2><p>{p.built}</p>
-    <h2>Engineering decisions</h2>
-    <ul>{p.decisions.map((d) => <li>{d}</li>)}</ul>
-    <p class="stack-text">{p.stack.join(' · ')}</p>
-    {p.visibility === 'public' && p.repoPublic && <p><a href={p.repoPublic}>Public repository</a></p>}
   </div></div>
+  <section class="band proj"><div class="wrap proj-grid">
+    <div class="prose"><h2>The problem</h2><p>{p.problem}</p></div>
+    <div class="prose"><h2>What I built</h2><p>{p.built}</p></div>
+  </div></section>
+  {f && (
+    <section class="band proj"><div class="wrap">
+      <div class="panel" style="padding:var(--space-6)">
+        <Flow spec={f.spec} alt={f.alt} label="Illustrative architecture" id={`p-${p.slug}`} />
+      </div>
+    </div></section>
+  )}
+  {chart && (
+    <section class="band proj"><div class="wrap two">
+      <div class="prose"><h2>A chart, with invented numbers</h2><p>This shape stands in for the kind of output the project produces. Every value is made up for the illustration.</p></div>
+      <Chart kind={chart} id={p.slug} />
+    </div></section>
+  )}
+  <section class="band proj"><div class="wrap two">
+    <div class="prose"><h2>Engineering decisions</h2><ul>{p.decisions.map((d) => <li>{d}</li>)}</ul></div>
+    <div class="prose">
+      <h2>Stack</h2><p class="stack-text">{p.stack.join(' · ')}</p>
+      {p.aiAssisted && <p>AI-assisted build: AI coding tools helped write parts of this project.</p>}
+    </div>
+  </div></section>
+  {p.visibility === 'public' && p.repoPublic && <div class="wrap"><p><a href={p.repoPublic}>Public repository</a></p></div>}
 </Base>

@@ -1,21 +1,96 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Flow from '../../components/Flow.astro';
 import { getApprovedProjects, getProfile } from '../../lib/content';
+import { projectFlows, STATUS } from '../../lib/diagrams';
 const p = await getProfile();
 const projects = await getApprovedProjects();
+const lead = projects.find((x) => x.data.slug === 'athena')!.data;
+const rest = projects.filter((x) => x.data.slug !== 'athena');
+const listed = projects.filter((x) => x.data.listed);
+const cats = [...new Set(listed.map((x) => x.data.category))];
+const types = [...new Set(listed.map((x) => x.data.workType))];
+const f = projectFlows['athena-gateway'];
 ---
-<Base motif title={`Projects | ${p.name}`} description="Projects built with LLMs.">
+<Base motif title={`Projects | ${p.name}`} description="Projects built with LLMs: an MCP gateway, an investment analysis agent, a forecasting platform, a browser extension and more.">
   <div class="page"><div class="wrap">
-    <h1>Projects</h1>
-    {projects.map((x) => (
-      <article>
-        <h2><a href={`/projects/${x.data.slug}/`}>{x.data.name}</a></h2>
-        <p>{x.data.oneLine}</p>
-        <p>
-          <span class="tag">{x.data.workType}</span>
-          {x.data.visibility === 'private' && <span class="tag">Private repository</span>}
-        </p>
-      </article>
-    ))}
+    <p class="sec-label">Projects</p>
+    <h1 class="page-h">Things I have built with LLMs</h1>
+    <p class="lede">Most of these live in private repositories, so there is no source to browse. Each page explains the problem, what I built and the decisions behind it.</p>
   </div></div>
+  <section class="band" aria-labelledby="lead-h"><div class="wrap">
+    <h2 id="lead-h" class="vh">Lead project</h2>
+    <article class="panel pj-lead">
+      <div class="lead-copy">
+        <p class="label">Lead project</p>
+        <h3><a class="plain-link" href={`/projects/${lead.slug}/`}>{lead.name}: MCP gateway</a></h3>
+        <p class="tags"><span class="tag">{lead.workType}</span> <span class="tag tag-static">Private repository</span></p>
+        <p>{lead.oneLine}</p>
+        <p class="problem">{lead.problem}</p>
+        <p><a class="more" href={`/projects/${lead.slug}/`}>Read the project <span aria-hidden="true">→</span></a></p>
+      </div>
+      <Flow spec={f.spec} alt={f.alt} label="Illustrative architecture" id="pj-athena" compact />
+    </article>
+  </div></section>
+  <section class="band" aria-labelledby="feat-h"><div class="wrap">
+    <h2 id="feat-h">Featured</h2>
+    <div class="feat-grid">
+      {rest.map((x) => (
+        <article class="panel feat">
+          <p class="label">{x.data.category}</p>
+          <h3><a class="plain-link" href={`/projects/${x.data.slug}/`}>{x.data.name}</a></h3>
+          <p>{x.data.oneLine}</p>
+          <p class="tags"><span class="tag">{x.data.workType}</span> <span class="tag tag-static">Private repository</span> {STATUS[x.data.status] !== x.data.workType && <span class="tag">{STATUS[x.data.status]}</span>}</p>
+          <a class="more" href={`/projects/${x.data.slug}/`}>Read the project <span aria-hidden="true">→</span></a>
+        </article>
+      ))}
+    </div>
+  </div></section>
+  <section class="band" aria-labelledby="lib-h"><div class="wrap" data-lib>
+    <h2 id="lib-h">All projects</h2>
+    <div class="filters" role="group" aria-label="Filter projects">
+      <div class="fgroup" data-group="category" role="group" aria-label="Category">
+        <span class="label">Category</span>
+        <button type="button" class="chip" data-v="" aria-pressed="true">All</button>
+        {cats.map((c) => <button type="button" class="chip" data-v={c} aria-pressed="false">{c}</button>)}
+      </div>
+      <div class="fgroup" data-group="type" role="group" aria-label="Work type">
+        <span class="label">Work type</span>
+        <button type="button" class="chip" data-v="" aria-pressed="true">All</button>
+        {types.map((c) => <button type="button" class="chip" data-v={c} aria-pressed="false">{c}</button>)}
+      </div>
+    </div>
+    <p class="result-count" role="status" aria-live="polite" data-count>Showing {listed.length} of {listed.length} projects</p>
+    <ul class="lib">
+      {listed.map((x) => (
+        <li data-category={x.data.category} data-type={x.data.workType}>
+          {x.data.approved ? <a class="l-name" href={`/projects/${x.data.slug}/`}>{x.data.name}</a> : <span class="l-name">{x.data.name}</span>}
+          <span class="l-one">{x.data.approved ? x.data.oneLine : x.data.category}</span>
+          <span class="l-meta">{x.data.workType} · {x.data.category}</span>
+        </li>
+      ))}
+    </ul>
+  </div></section>
+  <script>
+    const root = document.querySelector<HTMLElement>('[data-lib]');
+    if (root) {
+      const items = [...root.querySelectorAll<HTMLElement>('.lib li')];
+      const sel = { category: '', type: '' };
+      const out = root.querySelector('[data-count]')!;
+      root.querySelectorAll<HTMLElement>('.fgroup').forEach((g) => {
+        g.addEventListener('click', (e) => {
+          const b = (e.target as Element).closest<HTMLButtonElement>('.chip');
+          if (!b) return;
+          g.querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', String(c === b)));
+          sel[g.dataset.group as 'category' | 'type'] = b.dataset.v!;
+          let n = 0;
+          for (const li of items) {
+            const ok = (!sel.category || li.dataset.category === sel.category) && (!sel.type || li.dataset.type === sel.type);
+            li.hidden = !ok; if (ok) n++;
+          }
+          out.textContent = `Showing ${n} of ${items.length} projects`;
+        });
+      });
+    }
+  </script>
 </Base>

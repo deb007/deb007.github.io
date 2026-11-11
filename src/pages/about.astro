@@ -1,12 +1,33 @@
 ---
 import Base from '../layouts/Base.astro';
+import Layers from '../components/Layers.astro';
 import { getProfile, getExpertise } from '../lib/content';
 const p = await getProfile();
 const domains = await getExpertise();
 ---
-<Base motif title={`About | ${p.name}`} description={p.positioning}>
+<Base motif title={`About | ${p.name}`} description="Nearly two decades in enterprise technology and architecture, now building enterprise GenAI and agentic AI.">
   <div class="page"><div class="wrap">
-    <h1>About</h1>
-    {domains.map((d) => <section><h2>{d.data.title}</h2><p>{d.data.summary}</p></section>)}
+    <p class="sec-label">About</p>
+    <h1 class="page-h">Strategy, architecture and the code underneath</h1>
+    <p class="lede">{p.credentialLine}</p>
   </div></div>
+  <section class="band"><div class="wrap two">
+    <div class="prose">
+      <h2>The short version</h2>
+      <p>I have worked in enterprise technology for nearly twenty years, most of it on solution architecture and on leading engineering teams. I am a Senior Manager at IBM.</p>
+      <p>Over the last few years my focus has moved to generative and agentic AI: where it belongs in an organisation, how it fits the architecture around it, and what it takes to run it safely in production.</p>
+      <p>The work spans three levels. At the strategic level that means roadmaps, operating models, governance and advising executives. At the architectural level it means design, integration, security and scale. At the technical level I still build: prototypes, AI applications and agentic workflows, so that my advice rests on code I have written and run.</p>
+      <p>The projects on this site are personal. They exist because the quickest way to understand what a model can and cannot do is to build with it. Views here are my own.</p>
+    </div>
+    <Layers large />
+  </div></section>
+  <section class="band"><div class="wrap">
+    <h2>What I work on</h2>
+    <dl class="dl two">
+      {domains.map((d) => (
+        <div><dt>{d.data.title}</dt><dd>{d.data.summary}</dd><dd class="topics">{d.data.topics.join(' · ')}</dd></div>
+      ))}
+    </dl>
+    <p><a class="more" href="/projects/">See what I have built <span aria-hidden="true">→</span></a></p>
+  </div></section>
 </Base>

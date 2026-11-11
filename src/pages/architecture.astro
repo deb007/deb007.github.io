@@ -1,19 +1,26 @@
 ---
 import Base from '../layouts/Base.astro';
+import Flow from '../components/Flow.astro';
 import { getArchitecture, getProfile } from '../lib/content';
+import { stagesFromLayers } from '../lib/flow';
 const p = await getProfile();
 const items = await getArchitecture();
 ---
-<Base motif title={`Architecture | ${p.name}`} description="Reference architectures.">
+<Base motif title={`Architecture | ${p.name}`} description="Reference architectures for enterprise RAG, agentic orchestration with governance, MCP integration and production readiness.">
   <div class="page"><div class="wrap">
-    <h1>Architecture</h1>
-    {items.map((a) => (
-      <section>
-        <h2>{a.data.title}</h2>
-        <p class="label">{a.data.label}</p>
-        <ol>{a.data.layers.map((l) => <li><strong>{l.name}</strong>: {l.note}</li>)}</ol>
-        <p>{a.data.textAlternative}</p>
-      </section>
-    ))}
+    <p class="sec-label">Architecture</p>
+    <h1 class="page-h">How I approach AI systems</h1>
+    <p class="lede">Four patterns I come back to. They come from personal projects and general practice, not from any client engagement.</p>
   </div></div>
+  {items.map((a, i) => (
+    <section class="arch-item" aria-labelledby={`a-${i}`}>
+      <div class="wrap">
+        <h2 id={`a-${i}`}>{a.data.title}</h2>
+        <p class="lede">{a.data.summary}</p>
+        <div class="panel arch-panel">
+          <Flow spec={stagesFromLayers(a.data.layers, 36)} alt={a.data.textAlternative} label={a.data.label} id={`arch-${i}`} controls notes={a.data.layers} />
+        </div>
+      </div>
+    </section>
+  ))}
 </Base>
