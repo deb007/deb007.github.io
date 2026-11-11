@@ -1,0 +1,86 @@
+---
+import '../styles/global.css';
+import { getNav, getProfile } from '../lib/content';
+interface Props { title: string; description: string }
+const { title, description } = Astro.props;
+const nav = await getNav();
+const profile = await getProfile();
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+const year = new Date().getFullYear();
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <script is:inline>
+      try {
+        var t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+        if (localStorage.getItem('motion') === 'paused') document.documentElement.dataset.motion = 'paused';
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="/">{profile.name}</a>
+        <nav aria-label="Primary">
+          {nav.map((n) => <a href={n.href} aria-current={isCurrent(n.href) ? 'page' : undefined}>{n.label}</a>)}
+        </nav>
+        <button class="ctl" id="theme-toggle" type="button" aria-pressed="false">Theme: dark</button>
+        <button class="ctl" id="motion-toggle" type="button" aria-pressed="false">Pause animation</button>
+      </div>
+    </header>
+    <main id="main"><slot /></main>
+    <section class="closing" aria-labelledby="closing-h">
+      <div class="wrap">
+        <p id="closing-h">Talk to me about enterprise AI.</p>
+        <a href="/contact/">Contact</a>
+      </div>
+    </section>
+    <footer class="site-footer">
+      <div class="wrap">
+        <span>© {year} {profile.name}</span>
+        <a href={profile.githubProfile}>GitHub profile</a>
+        <span>Views are my own.</span>
+      </div>
+    </footer>
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        var tb = document.getElementById('theme-toggle'), mb = document.getElementById('motion-toggle');
+        function isLight() { return root.dataset.theme ? root.dataset.theme === 'light' : matchMedia('(prefers-color-scheme: light)').matches; }
+        function sync() {
+          tb.textContent = 'Theme: ' + (isLight() ? 'light' : 'dark');
+          tb.setAttribute('aria-pressed', String(isLight()));
+          var p = root.dataset.motion === 'paused';
+          mb.textContent = p ? 'Resume animation' : 'Pause animation';
+          mb.setAttribute('aria-pressed', String(p));
+        }
+        tb.addEventListener('click', function () {
+          var next = isLight() ? 'dark' : 'light'; root.dataset.theme = next;
+          try { localStorage.setItem('theme', next); } catch (e) {}
+          sync();
+        });
+        mb.addEventListener('click', function () {
+          var p = root.dataset.motion === 'paused';
+          if (p) delete root.dataset.motion; else root.dataset.motion = 'paused';
+          try { localStorage.setItem('motion', p ? 'running' : 'paused'); } catch (e) {}
+          sync();
+        });
+        sync();
+      })();
+    </script>
+  </body>
+</html>
