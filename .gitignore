@@ -3,3 +3,5 @@ dist/
 .astro/
 public/portfolio.json
 .remember/
+test-results/
+playwright-report/
