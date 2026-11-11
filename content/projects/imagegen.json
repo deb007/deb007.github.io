@@ -1,0 +1,24 @@
+{
+  "name": "ImageGen",
+  "slug": "imagegen",
+  "oneLine": "One interface over several image-generation models.",
+  "visibility": "private",
+  "workType": "Personal project",
+  "category": "Enterprise AI & GenAI",
+  "status": "dormant",
+  "approved": true,
+  "listed": true,
+  "order": 6,
+  "aiAssisted": true,
+  "problem": "Each image model has its own API, so switching provider means rewriting calls.",
+  "built": "A Python application with Azure OpenAI and Gemini providers behind a single interface.",
+  "decisions": [
+    "Providers implement one shared interface, so a model can be swapped without changing the callers."
+  ],
+  "stack": [
+    "Python",
+    "Azure OpenAI",
+    "Gemini"
+  ],
+  "diagramRef": "imagegen-providers"
+}

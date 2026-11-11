@@ -1,0 +1,22 @@
+{
+  "name": "Omnitype",
+  "slug": "omnitype",
+  "oneLine": "Voice dictation for Windows with LLM-powered voice actions.",
+  "visibility": "private",
+  "workType": "Prototype",
+  "category": "Developer tools & automation",
+  "status": "prototype",
+  "approved": true,
+  "listed": true,
+  "order": 7,
+  "aiAssisted": false,
+  "problem": "Dictation turns speech into text but cannot act on it.",
+  "built": "A Rust desktop app for Windows that converts speech to text and runs LLM-driven actions on it. Version 0.1.0, covered by unit tests.",
+  "decisions": [
+    "The speech-to-text path works on its own; LLM actions are layered on top of it."
+  ],
+  "stack": [
+    "Rust"
+  ],
+  "diagramRef": "omnitype-pipeline"
+}

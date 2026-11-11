@@ -1,0 +1,23 @@
+{
+  "name": "PFDF",
+  "slug": "pfdf",
+  "oneLine": "Personal finance analytics and forecasting with an LLM insight layer over Firefly III.",
+  "visibility": "private",
+  "workType": "Personal project",
+  "category": "Enterprise AI & GenAI",
+  "status": "wip",
+  "approved": true,
+  "listed": true,
+  "order": 4,
+  "aiAssisted": true,
+  "problem": "Finance records in Firefly III hold the data but give little forward-looking insight.",
+  "built": "A data platform that forecasts from Firefly III records and adds an LLM layer that explains the results. The LLM is one layer of the platform, not the whole of it. Any chart shown on this site uses synthetic data only.",
+  "decisions": [
+    "The LLM explains results from the forecasting layer rather than producing the numbers."
+  ],
+  "stack": [
+    "Python",
+    "Firefly III"
+  ],
+  "diagramRef": "pfdf-pipeline"
+}

@@ -1,0 +1,24 @@
+{
+  "name": "Athena",
+  "slug": "athena",
+  "oneLine": "One MCP gateway that gives AI assistants a single tool surface over ten self-hosted services.",
+  "visibility": "private",
+  "workType": "Personal project",
+  "category": "Agentic AI & MCP",
+  "status": "active",
+  "approved": true,
+  "listed": true,
+  "order": 1,
+  "aiAssisted": false,
+  "problem": "Each self-hosted service has its own interface, so an AI assistant needs a separate integration for every one of them.",
+  "built": "An MCP server with one adapter per service: Firefly III, Homebox, Paperless-ngx, Immich, Blinko, TickTick, Tavily, Uptime Kuma, Beszel and weather. Clients documented in the project are Claude Desktop, VS Code with GitHub Copilot, and n8n workflows; any MCP client can connect.",
+  "decisions": [
+    "One gateway instead of one integration per client.",
+    "Each service sits behind its own adapter, so adding a service does not touch the others."
+  ],
+  "stack": [
+    "Python",
+    "MCP"
+  ],
+  "diagramRef": "athena-gateway"
+}

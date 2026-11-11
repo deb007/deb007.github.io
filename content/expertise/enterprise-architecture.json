@@ -1,0 +1,12 @@
+{
+  "title": "Enterprise Architecture",
+  "order": 3,
+  "summary": "Solution design that holds up on integration, security and scale.",
+  "topics": [
+    "Solution and cloud-native architecture",
+    "Microservices and distributed systems",
+    "API and integration architecture",
+    "Data and application architecture",
+    "Security and scalability"
+  ]
+}

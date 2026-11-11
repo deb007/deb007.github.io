@@ -1,0 +1,28 @@
+{
+  "title": "Retrieval-augmented generation",
+  "order": 2,
+  "label": "Reference architecture: how I approach this",
+  "layers": [
+    {
+      "name": "Sources",
+      "note": "Documents and records that are allowed to be retrieved."
+    },
+    {
+      "name": "Ingestion and indexing",
+      "note": "Splits, embeds and indexes sources."
+    },
+    {
+      "name": "Retrieval",
+      "note": "Finds the passages relevant to a question."
+    },
+    {
+      "name": "Generation",
+      "note": "The model answers using only the retrieved passages."
+    },
+    {
+      "name": "Evaluation",
+      "note": "Checks answers against the sources."
+    }
+  ],
+  "textAlternative": "Five stages from left to right. Sources are ingested and indexed. Retrieval finds relevant passages for a question. Generation answers from those passages. Evaluation checks the answers against the sources."
+}

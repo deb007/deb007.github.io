@@ -1,0 +1,13 @@
+{
+  "title": "Generative & Agentic AI",
+  "order": 2,
+  "summary": "Designing LLM systems that retrieve, reason and act through tools.",
+  "topics": [
+    "LLM architecture",
+    "RAG and enterprise knowledge systems",
+    "Agentic workflows",
+    "LangGraph and orchestration",
+    "MCP and tool integration",
+    "Multi-agent architectures"
+  ]
+}

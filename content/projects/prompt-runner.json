@@ -1,0 +1,23 @@
+{
+  "name": "Prompt Runner",
+  "slug": "prompt-runner",
+  "oneLine": "A browser extension with a RAG knowledge base, long-term memory and a tool-using agent.",
+  "visibility": "private",
+  "workType": "Personal project",
+  "category": "Agentic AI & MCP",
+  "status": "active",
+  "approved": true,
+  "listed": true,
+  "order": 2,
+  "aiAssisted": false,
+  "problem": "Prompts used in the browser are re-typed and have no memory of earlier work or reference material.",
+  "built": "A Manifest V3 browser extension, loaded unpacked, with a retrieval knowledge base, long-term memory and an agent that can call tools.",
+  "decisions": [
+    "Retrieval, memory and tool use are separate parts of the extension."
+  ],
+  "stack": [
+    "JavaScript",
+    "Manifest V3"
+  ],
+  "diagramRef": "prompt-runner-extension"
+}

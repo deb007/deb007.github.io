@@ -1,0 +1,13 @@
+{
+  "title": "Engineering & Platforms",
+  "order": 4,
+  "summary": "Hands-on building: the languages, platforms and tooling behind the prototypes.",
+  "topics": [
+    "Python and FastAPI",
+    "React and Node.js",
+    "Azure and Azure OpenAI",
+    "PostgreSQL and vector databases",
+    "Docker and automation",
+    "AI infrastructure and developer tooling"
+  ]
+}

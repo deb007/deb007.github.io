@@ -1,0 +1,23 @@
+{
+  "name": "MyInvs",
+  "slug": "myinvs",
+  "oneLine": "A portfolio tracker with an LLM analysis agent for risk and market context.",
+  "visibility": "private",
+  "workType": "Personal project",
+  "category": "Enterprise AI & GenAI",
+  "status": "active",
+  "approved": true,
+  "listed": true,
+  "order": 3,
+  "aiAssisted": true,
+  "problem": "Tracking investments and understanding their risk and tax position takes manual work across several sources.",
+  "built": "A Python application with a LangGraph analysis agent whose steps cover portfolio data, market context, news sentiment, risk calculation and synthesis. Any dashboard shown on this site uses synthetic data only.",
+  "decisions": [
+    "The agent is split into one node per concern, so each step can be tested on its own."
+  ],
+  "stack": [
+    "Python",
+    "LangGraph"
+  ],
+  "diagramRef": "myinvs-agent"
+}

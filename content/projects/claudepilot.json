@@ -1,0 +1,23 @@
+{
+  "name": "ClaudePilot",
+  "slug": "claudepilot",
+  "oneLine": "A phone client for supervising Claude Code sessions.",
+  "visibility": "private",
+  "workType": "Prototype",
+  "category": "Agentic AI & MCP",
+  "status": "prototype",
+  "approved": true,
+  "listed": true,
+  "order": 5,
+  "aiAssisted": true,
+  "problem": "A long-running coding agent needs attention while the developer is away from the desk.",
+  "built": "An Android client in Kotlin that drives Claude Code through the Agent SDK via a broker, with CI that builds the app. Currently at v0.1.",
+  "decisions": [
+    "A broker sits between the phone and the agent, with its own tests, so the phone never talks to the agent directly."
+  ],
+  "stack": [
+    "Kotlin",
+    "Claude Agent SDK"
+  ],
+  "diagramRef": "claudepilot-broker"
+}

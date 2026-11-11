@@ -1,0 +1,28 @@
+{
+  "title": "Agentic orchestration with governance",
+  "order": 1,
+  "label": "Reference architecture: how I approach this",
+  "layers": [
+    {
+      "name": "Clients",
+      "note": "Where requests enter: assistants, workflows and applications."
+    },
+    {
+      "name": "Orchestration",
+      "note": "Routes each request to the agent or tool that should handle it."
+    },
+    {
+      "name": "Governance and guardrails",
+      "note": "Policy, access control and checks applied before and after each step."
+    },
+    {
+      "name": "Tools and data",
+      "note": "The services and data stores the agents may use."
+    },
+    {
+      "name": "Observability",
+      "note": "Traces and logs for every request, so behaviour can be reviewed."
+    }
+  ],
+  "textAlternative": "Five layers from top to bottom. Clients send requests to an orchestration layer. A governance and guardrails layer checks each step. Approved steps reach tools and data. An observability layer records every request across all layers."
+}
