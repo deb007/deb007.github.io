@@ -1,8 +1,9 @@
 ---
 import '../styles/global.css';
 import { getNav, getProfile } from '../lib/content';
-interface Props { title: string; description: string }
-const { title, description } = Astro.props;
+import PageMotif from '../components/PageMotif.astro';
+interface Props { title: string; description: string; motif?: boolean }
+const { title, description, motif = false } = Astro.props;
 const nav = await getNav();
 const profile = await getProfile();
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
@@ -24,6 +25,7 @@ const year = new Date().getFullYear();
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary" />
     <script is:inline>
+      document.documentElement.classList.add('js');
       try {
         var t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
         if (localStorage.getItem('motion') === 'paused') document.documentElement.dataset.motion = 'paused';
@@ -32,7 +34,7 @@ const year = new Date().getFullYear();
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
-    <header class="site-header">
+    <header class="site-header hl-line">
       <div class="wrap">
         <a class="brand" href="/">{profile.name}</a>
         <nav aria-label="Primary">
@@ -42,14 +44,16 @@ const year = new Date().getFullYear();
         <button class="ctl" id="motion-toggle" type="button" aria-pressed="false">Pause animation</button>
       </div>
     </header>
+    {motif && <div class="wrap motif-row"><PageMotif /></div>}
     <main id="main"><slot /></main>
     <section class="closing" aria-labelledby="closing-h">
-      <div class="wrap">
+      <canvas id="earth" class="earth" aria-hidden="true"></canvas>
+      <div class="wrap closing-in">
         <p id="closing-h">Talk to me about enterprise AI.</p>
         <a href="/contact/">Contact</a>
       </div>
     </section>
-    <footer class="site-footer">
+    <footer class="site-footer hl-line">
       <div class="wrap">
         <span>© {year} {profile.name}</span>
         <a href={profile.githubProfile}>GitHub profile</a>
@@ -70,6 +74,7 @@ const year = new Date().getFullYear();
         }
         tb.addEventListener('click', function () {
           var next = isLight() ? 'dark' : 'light'; root.dataset.theme = next;
+          document.dispatchEvent(new Event('themechange'));
           try { localStorage.setItem('theme', next); } catch (e) {}
           sync();
         });
@@ -77,10 +82,12 @@ const year = new Date().getFullYear();
           var p = root.dataset.motion === 'paused';
           if (p) delete root.dataset.motion; else root.dataset.motion = 'paused';
           try { localStorage.setItem('motion', p ? 'running' : 'paused'); } catch (e) {}
+          document.dispatchEvent(new Event('motionchange'));
           sync();
         });
         sync();
       })();
     </script>
+    <script>import '../scripts/site';</script>
   </body>
 </html>

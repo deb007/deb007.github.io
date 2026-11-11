@@ -1,0 +1,30 @@
+---
+import { getProfile } from '../lib/content';
+const p = await getProfile();
+// Headline is split into its sentences for the line-by-line reveal; copy comes from profile data.
+const lines = p.headline.split(/(?<=\.)\s+/);
+const accent = 'into Production.';
+---
+<section class="hero" aria-labelledby="hero-h">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="label hr" style="--d:0s">{p.positioning}</p>
+      <h1 id="hero-h">
+        {lines.map((l, i) => (
+          <span class="ln"><span style={`--d:${0.05 + i * 0.12}s`}>
+            {l.includes(accent) ? <Fragment>{l.slice(0, l.indexOf(accent))}<span class="accent">{accent}</span></Fragment> : l}
+          </span></span>
+        ))}
+      </h1>
+      <p class="hr" style="--d:0.35s">{p.credentialLine}</p>
+      <p class="hr" style="--d:0.45s"><a class="btn" href="/projects/">Explore my work</a></p>
+    </div>
+    <div class="hero-visual" id="hero-visual">
+      <picture>
+        <source srcset="/hero/hero-poster.avif" type="image/avif" />
+        <img src="/hero/hero-poster.webp" width="504" height="360" alt="" fetchpriority="high" decoding="async" />
+      </picture>
+      <canvas id="hero-globe" aria-hidden="true"></canvas>
+    </div>
+  </div>
+</section>

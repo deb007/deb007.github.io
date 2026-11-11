@@ -4,7 +4,7 @@ import { getProfile, getExpertise } from '../lib/content';
 const p = await getProfile();
 const domains = await getExpertise();
 ---
-<Base title={`About | ${p.name}`} description={p.positioning}>
+<Base motif title={`About | ${p.name}`} description={p.positioning}>
   <div class="page"><div class="wrap">
     <h1>About</h1>
     {domains.map((d) => <section><h2>{d.data.title}</h2><p>{d.data.summary}</p></section>)}

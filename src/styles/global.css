@@ -13,7 +13,7 @@ a { color: var(--accent-text); }
 .tag { display: inline-block; font-family: var(--font-mono); font-size: var(--size-label); border: 1px solid var(--line); padding: 2px var(--space-2); color: var(--text-muted); }
 .skip { position: absolute; left: -999px; }
 .skip:focus { left: var(--space-4); top: var(--space-4); background: var(--surface); padding: var(--space-2) var(--space-3); z-index: 10; }
-.site-header { border-bottom: 1px solid var(--line); }
+.site-header { position: relative; }
 .site-header .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); padding-block: var(--space-4); }
 .site-header nav { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-right: auto; }
 .site-header nav a { color: var(--text); text-decoration: none; padding-block: var(--space-1); border-bottom: 2px solid transparent; }
@@ -22,10 +22,95 @@ a { color: var(--accent-text); }
 .ctl { font: inherit; font-size: var(--size-label); background: none; color: var(--text); border: 1px solid var(--line); padding: var(--space-1) var(--space-3); cursor: pointer; }
 .closing { border-top: 1px solid var(--line); padding-block: var(--space-8); background: var(--surface); }
 .closing p { font-family: var(--font-display); font-size: 1.75rem; margin: 0 0 var(--space-4); max-width: var(--measure); }
-.site-footer { border-top: 1px solid var(--line); padding-block: var(--space-5); color: var(--text-muted); font-size: var(--size-label); }
+.site-footer { position: relative; padding-block: var(--space-5); color: var(--text-muted); font-size: var(--size-label); }
 .site-footer .wrap { display: flex; flex-wrap: wrap; gap: var(--space-4); }
 .page { padding-block: var(--space-8); }
 .page > .wrap > * + * { margin-top: var(--space-5); }
 .stack-text { font-family: var(--font-mono); font-size: var(--size-label); color: var(--text-muted); }
-html[data-motion='paused'] *, html[data-motion='paused'] *::before, html[data-motion='paused'] *::after { animation-play-state: paused !important; transition: none !important; }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+
+/* ---- Hero ---- */
+.hero { padding-block: var(--space-8) var(--space-7); overflow: hidden; }
+.hero-grid { display: grid; gap: var(--space-6); grid-template-columns: 1fr; align-items: center; }
+@media (min-width: 900px) { .hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: var(--space-7); } }
+.hero-copy > * + * { margin-top: var(--space-4); }
+.hero h1 { margin: 0; }
+.hero .accent { color: var(--accent-text); }
+.btn { display: inline-block; padding: var(--space-3) var(--space-5); border: 1px solid var(--accent); background: var(--accent); color: #fff; text-decoration: none; }
+:root[data-theme='light'] .btn { color: #fff; }
+.hero-visual { position: relative; width: 100%; aspect-ratio: 504 / 360; border-radius: 4px; overflow: hidden; background: var(--bg); }
+.hero-visual picture, .hero-visual img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.hero-visual canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.6s ease; }
+.hero-visual canvas.on { opacity: 1; }
+/* Light theme: the dark-art poster is a fallback only; scrim keeps it off the paper tone. */
+:root[data-theme='light'] .hero-visual img { filter: invert(0.92) hue-rotate(180deg) saturate(0.7); }
+@media (prefers-color-scheme: light) { :root:not([data-theme]) .hero-visual img { filter: invert(0.92) hue-rotate(180deg) saturate(0.7); } }
+
+/* Hero text: mask reveal line by line, then copy and button; ~1s total. */
+.js .hero h1 .ln { display: block; overflow: hidden; padding-bottom: 0.08em; }
+.js .hero h1 .ln > span { display: block; transform: translateY(105%); animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d) forwards; }
+.js .hero .hr { opacity: 0; animation: fade 0.5s ease var(--d) forwards; }
+@keyframes rise { to { transform: none; } }
+@keyframes fade { to { opacity: 1; } }
+
+/* Inner-page motif: draws once, then idles very slowly. */
+.motif-row { padding-top: var(--space-4); color: var(--accent); }
+.motif { display: block; max-width: 100%; height: auto; }
+.m-node { fill: var(--accent); }
+.js .m-arc { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.4s ease 0.1s forwards; }
+.js .m-node { opacity: 0; animation: fade 0.4s ease 1.2s forwards, idle 14s ease-in-out 1.6s infinite; }
+.js .m-node.n2 { animation-delay: 0.7s, 1.6s; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes idle { 50% { transform: translateY(-1.5px); } }
+
+/* Hairlines and headings: once on entry. */
+.js .hl, 
+.js main h2.rv, .js main h1.rv { clip-path: inset(0 0 100% 0); transform: translateY(0.4em); transition: clip-path 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--i, 0) * 70ms), transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--i, 0) * 70ms); }
+.js main h2.rv.in, .js main h1.rv.in { clip-path: inset(0); transform: none; }
+.motif-row.hl, .hl-line { position: relative; }
+.hl-line::after { content: ''; position: absolute; left: 0; bottom: 0; height: 1px; width: 100%; background: var(--line); transform-origin: left; }
+.js .hl-line::after { transform: scaleX(0); transition: transform 0.8s ease; }
+.js .hl-line.in::after { transform: scaleX(1); }
+
+/* Nav indicator slides; the static border stays as the no-JS fallback. */
+.site-header nav { position: relative; }
+.nav-ready .site-header nav a[aria-current='page'] { border-bottom-color: transparent; }
+.nav-ind { position: absolute; left: 0; bottom: 0; height: 2px; background: var(--accent); pointer-events: none; }
+.nav-ind.anim { transition: transform 0.28s cubic-bezier(0.2, 0.7, 0.2, 1), width 0.28s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.2s; }
+
+/* Closing band with the bottom Earth. */
+.closing { position: relative; overflow: hidden; padding-block: var(--space-9) var(--space-8); border-top: 0; }
+.closing::before { content: ''; position: absolute; left: 0; top: 0; height: 1px; width: 100%; background: var(--line); }
+.earth { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.6s ease; }
+.earth.on { opacity: 1; }
+.closing-in { position: relative; z-index: 1; }
+.closing-in::before { content: ''; position: absolute; inset: -24px -24px -24px -24px; z-index: -1; background: linear-gradient(90deg, var(--bg), transparent 85%); opacity: 0.85; }
+/* Closing panel: border-light sweep, once. */
+.closing::after { content: ''; position: absolute; left: 0; top: 0; height: 2px; width: 30%; background: linear-gradient(90deg, transparent, var(--accent), transparent); transform: translateX(-100%); opacity: 0; }
+.js .closing.in::after { animation: sweep 1.8s ease 0.2s 1 forwards; }
+@keyframes sweep { 0% { opacity: 1; transform: translateX(-100%); } 100% { opacity: 0; transform: translateX(340%); } }
+
+/* Theme toggle: 250 ms cross-fade on colours. */
+body, .site-header, .site-footer, .closing, .btn, .ctl, .hero-visual { transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease; }
+
+/* Still mode: prefers-reduced-motion or the Pause control. Final frames only, no animation. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .js .hero h1 .ln > span { transform: none; }
+  .js .hero .hr { opacity: 1; }
+  .js .m-arc { stroke-dashoffset: 0; }
+  .js .m-node { opacity: 1; }
+  .js main h1.rv, .js main h2.rv { clip-path: none; transform: none; }
+  .js .hl-line::after { transform: none; }
+  .closing::after { display: none; }
+}
+html[data-motion='paused'] *, html[data-motion='paused'] *::before, html[data-motion='paused'] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+html[data-motion='paused'].js .hero h1 .ln > span { transform: none; }
+html[data-motion='paused'].js .hero .hr { opacity: 1; }
+html[data-motion='paused'].js .m-arc { stroke-dashoffset: 0; }
+html[data-motion='paused'].js .m-node { opacity: 1; }
+html[data-motion='paused'].js main h1.rv, html[data-motion='paused'].js main h2.rv { clip-path: none; transform: none; }
+html[data-motion='paused'].js .hl-line::after { transform: none; }
+html[data-motion='paused'] .closing::after { display: none; }
+.site-footer.hl-line::after { top: 0; bottom: auto; }
+
+.hero h1 { font-size: clamp(2.25rem, 4.4vw, 4rem); }

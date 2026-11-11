@@ -4,7 +4,7 @@ import { getArchitecture, getProfile } from '../lib/content';
 const p = await getProfile();
 const items = await getArchitecture();
 ---
-<Base title={`Architecture | ${p.name}`} description="Reference architectures.">
+<Base motif title={`Architecture | ${p.name}`} description="Reference architectures.">
   <div class="page"><div class="wrap">
     <h1>Architecture</h1>
     {items.map((a) => (

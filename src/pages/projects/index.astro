@@ -4,7 +4,7 @@ import { getApprovedProjects, getProfile } from '../../lib/content';
 const p = await getProfile();
 const projects = await getApprovedProjects();
 ---
-<Base title={`Projects | ${p.name}`} description="Projects built with LLMs.">
+<Base motif title={`Projects | ${p.name}`} description="Projects built with LLMs.">
   <div class="page"><div class="wrap">
     <h1>Projects</h1>
     {projects.map((x) => (
