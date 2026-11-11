@@ -4,7 +4,7 @@ interface Props { kind: 'myinvs' | 'pfdf'; id: string }
 const { kind, id } = Astro.props;
 const W = 440, H = 210, L = 12, R = 12, T = 16, B = 34;
 const px = (i: number, n: number) => L + ((W - L - R) * i) / (n - 1);
-const py = (v: number) => T + (H - T - B) * (1 - (v - 80) / 70);
+const py = (v: number) => T + 14 + (H - T - B - 14) * (1 - (v - 95) / 45);
 const line = (a: number[], off = 0, n = a.length + off) => a.map((v, i) => `${i ? 'L' : 'M'}${px(i + off, n).toFixed(1)} ${py(v).toFixed(1)}`).join('');
 const A = [100, 103, 101, 108, 112, 109, 117, 121, 118, 126, 131, 128];
 const Bm = [100, 101, 103, 102, 106, 108, 107, 111, 113, 112, 116, 118];
@@ -26,8 +26,8 @@ const cap = kind === 'myinvs'
       <g>
         <path class="ch-line ch-b" pathLength="1" d={line(Bm)} />
         <path class="ch-line ch-a" pathLength="1" d={line(A)} />
-        <text x={W - R} y={py(A[11]) - 8} text-anchor="end" class="ch-t">Synthetic portfolio index</text>
-        <text x={W - R} y={py(Bm[11]) + 20} text-anchor="end" class="ch-t ch-tm">Synthetic benchmark</text>
+        <text x={W - R} y={py(A[11]) - 10} text-anchor="end" class="ch-t">Synthetic portfolio index</text>
+        <text x={W - R} y={py(Bm[11]) + 22} text-anchor="end" class="ch-t ch-tm">Synthetic benchmark</text>
       </g>
     ) : (
       <g>
