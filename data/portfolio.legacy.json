@@ -71,7 +71,7 @@
         "automation"
       ],
       "links": {
-        "github": "https://github.com/deb007/athena"
+        "github": ""
       },
       "metrics": {
         "starsCount": 0,
@@ -126,7 +126,7 @@
         "postgresql"
       ],
       "links": {
-        "github": "https://github.com/deb007/emenef"
+        "github": ""
       },
       "metrics": {
         "starsCount": 0,
@@ -180,7 +180,7 @@
         "admin"
       ],
       "links": {
-        "github": "https://github.com/deb007/flashcards"
+        "github": ""
       },
       "metrics": {
         "starsCount": 0,
@@ -214,7 +214,7 @@
       },
       "visibility": {
         "showOnPortfolio": true,
-        "showSourceLink": true,
+        "showSourceLink": false,
         "showMetrics": false
       }
     },
@@ -234,7 +234,7 @@
         "developer-tools"
       ],
       "links": {
-        "github": "https://github.com/deb007/gptdbinfo"
+        "github": ""
       },
       "metrics": {
         "starsCount": 0,
@@ -288,7 +288,7 @@
         "github-actions"
       ],
       "links": {
-        "github": "https://github.com/deb007/grayipos"
+        "github": ""
       },
       "metrics": {
         "starsCount": 0,
@@ -342,7 +342,7 @@
         "azure-openai"
       ],
       "links": {
-        "github": "https://github.com/deb007/imagegen"
+        "github": ""
       },
       "metrics": {
         "starsCount": 1,
@@ -396,7 +396,7 @@
         "analytics"
       ],
       "links": {
-        "github": "https://github.com/deb007/pfdf"
+        "github": ""
       },
       "metrics": {
         "starsCount": 1,
@@ -554,7 +554,7 @@
         "productivity"
       ],
       "links": {
-        "github": "https://github.com/deb007/prompt-runner-extension"
+        "github": ""
       },
       "metrics": {
         "starsCount": 0,
@@ -609,7 +609,7 @@
         "india"
       ],
       "links": {
-        "github": "https://github.com/deb007/MyInvs"
+        "github": ""
       },
       "metrics": {
         "starsCount": 0,
@@ -664,7 +664,7 @@
         "search"
       ],
       "links": {
-        "github": "https://github.com/deb007/callz"
+        "github": ""
       },
       "metrics": {
         "starsCount": 0,
