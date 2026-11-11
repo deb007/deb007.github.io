@@ -12,7 +12,11 @@
     "validate:portfolio-json": "node scripts/validate-portfolio-json.mjs",
     "check": "npm run build && npm run privacy && npm run validate:portfolio-json",
     "build:globe-data": "node scripts/build-globe-data.mjs",
-    "test:motion": "npm run build && playwright test tests/motion.spec.ts"
+    "test:motion": "npm run build && playwright test tests/motion.spec.ts",
+    "measure": "node scripts/measure.mjs",
+    "contrast": "node scripts/contrast.mjs",
+    "links": "node scripts/links.mjs",
+    "screenshots": "node scripts/screenshots.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

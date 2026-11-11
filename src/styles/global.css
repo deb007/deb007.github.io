@@ -379,3 +379,5 @@ html[data-motion='paused'].js .arch-item .flow-note { display: none; }
 @media (min-width: 900px) { .feat-grid > :nth-child(n+5) { grid-column: span 6; } }
 :root[data-theme='light'] .closing .btn { color: #fff; }
 :root[data-theme='light'] .closing .btn:hover { color: #fff; background: var(--text); border-color: var(--text); }
+/* Chart labels scale with the SVG; below ~520px the box shrinks, so the label size is raised to keep >=13px effective. */
+@media (max-width: 520px) { .ch-t { font-size: 19px; } }
