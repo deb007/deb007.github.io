@@ -1,0 +1,49 @@
+---
+// Synthetic charts. The numbers are invented; no figure here comes from a real account or portfolio.
+interface Props { kind: 'myinvs' | 'pfdf'; id: string }
+const { kind, id } = Astro.props;
+const W = 440, H = 210, L = 12, R = 12, T = 16, B = 34;
+const px = (i: number, n: number) => L + ((W - L - R) * i) / (n - 1);
+const py = (v: number) => T + (H - T - B) * (1 - (v - 80) / 70);
+const line = (a: number[], off = 0, n = a.length + off) => a.map((v, i) => `${i ? 'L' : 'M'}${px(i + off, n).toFixed(1)} ${py(v).toFixed(1)}`).join('');
+const A = [100, 103, 101, 108, 112, 109, 117, 121, 118, 126, 131, 128];
+const Bm = [100, 101, 103, 102, 106, 108, 107, 111, 113, 112, 116, 118];
+const hist = [100, 102, 101, 105, 104, 108, 111, 110, 114, 113, 117, 119];
+const fc = [119, 121, 124, 126, 129, 131];
+const nAll = hist.length + fc.length - 1;
+const bandHi = fc.map((v, i) => v + 2 + i * 1.6), bandLo = fc.map((v, i) => v - 2 - i * 1.6);
+const bandPath = bandHi.map((v, i) => `${i ? 'L' : 'M'}${px(i + hist.length - 1, nAll).toFixed(1)} ${py(v).toFixed(1)}`).join('') +
+  bandLo.map((v, i) => `L${px(fc.length - 1 - i + hist.length - 1, nAll).toFixed(1)} ${py(bandLo[fc.length - 1 - i]).toFixed(1)}`).join('') + 'Z';
+const cap = kind === 'myinvs'
+  ? 'A line chart with two invented series over twelve months: a synthetic portfolio index that ends higher than a synthetic benchmark index.'
+  : 'A line chart: twelve months of invented history, then a dashed forecast line that continues upward inside a widening shaded band.';
+---
+<figure class="chart" data-chart={kind}>
+  <p class="label">Illustrative, synthetic data</p>
+  <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} role="img" aria-label={cap}>
+    {[0, 1, 2, 3].map((i) => <line class="ch-grid" x1={L} x2={W - R} y1={T + ((H - T - B) * i) / 3} y2={T + ((H - T - B) * i) / 3} />)}
+    {kind === 'myinvs' ? (
+      <g>
+        <path class="ch-line ch-b" pathLength="1" d={line(Bm)} />
+        <path class="ch-line ch-a" pathLength="1" d={line(A)} />
+        <text x={W - R} y={py(A[11]) - 8} text-anchor="end" class="ch-t">Synthetic portfolio index</text>
+        <text x={W - R} y={py(Bm[11]) + 20} text-anchor="end" class="ch-t ch-tm">Synthetic benchmark</text>
+      </g>
+    ) : (
+      <g>
+        <path class="ch-band" d={bandPath} />
+        <path class="ch-line ch-a" pathLength="1" d={line(hist, 0, nAll)} />
+        <path class="ch-line ch-f" pathLength="1" d={line(fc, hist.length - 1, nAll)} />
+        <text x={L} y={py(hist[0]) + 22} class="ch-t ch-tm">History (synthetic)</text>
+        <text x={W - R} y={py(fc[5]) - 20} text-anchor="end" class="ch-t">Forecast (synthetic)</text>
+      </g>
+    )}
+    <text x={L} y={H - 10} class="ch-t ch-tm">Month 1</text>
+    <text x={W - R} y={H - 10} text-anchor="end" class="ch-t ch-tm">Month {kind === 'myinvs' ? 12 : 18}</text>
+  </svg>
+  <figcaption class="flow-alt">{cap}</figcaption>
+</figure>
+<script>
+  const io = new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }, { threshold: 0.3 });
+  document.querySelectorAll('[data-chart]').forEach((c) => io.observe(c));
+</script>

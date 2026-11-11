@@ -1,0 +1,22 @@
+---
+// Strategic / Architectural / Technical as three ruled layers. Original SVG-free CSS drawing.
+interface Props { large?: boolean }
+const { large = false } = Astro.props;
+const layers = [
+  { n: 'Strategic', line: 'AI roadmaps, operating models, governance and advice to executives.' },
+  { n: 'Architectural', line: 'Solution design, integration, security and scale.' },
+  { n: 'Technical', line: 'Prototypes and production code: AI applications and agentic workflows.' },
+];
+---
+<figure class:list={['layers', large && 'layers-lg']}>
+  <p class="label layers-tag">Illustrative</p>
+  <ol class="layers-stack">
+    {layers.map((l, i) => (
+      <li class="layer" style={`--k:${i}`}>
+        <span class="layer-n">{l.n}</span>
+        <span class="layer-l">{l.line}</span>
+      </li>
+    ))}
+  </ol>
+  <figcaption class="vh">Three levels of work, from strategy at the top to engineering at the base.</figcaption>
+</figure>
