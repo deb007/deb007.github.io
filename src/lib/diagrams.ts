@@ -19,8 +19,8 @@ export const projectFlows: Record<string, { spec: FlowSpec; alt: string }> = {
     alt: 'An analysis agent with five steps in order: portfolio data, market context, news sentiment, risk calculation, then synthesis.',
   },
   'pfdf-pipeline': {
-    spec: { stages: ['Firefly III|records', 'Forecasting', 'LLM layer|explains results', 'Insights'].map((n) => ({ nodes: [n] })), gap: 36 },
-    alt: 'Records from Firefly III feed a forecasting layer. An LLM layer then explains the forecast results. The output is a set of insights. The LLM explains the numbers; it does not produce them.',
+    spec: { stages: ['Firefly III|records', 'Forecasting', 'LLM layer|explains results', 'Explained|forecast'].map((n) => ({ nodes: [n] })), gap: 36 },
+    alt: 'Records from Firefly III feed a forecasting layer. An LLM layer then explains the forecast results. The output is an explained forecast. The LLM explains the numbers; it does not produce them.',
   },
   'prompt-runner-extension': {
     spec: { stages: [{ nodes: ['Prompt'] }, { nodes: ['Agent'] }, { nodes: ['Knowledge base|(retrieval)', 'Long-term|memory', 'Tools'] }], gap: 40 },
