@@ -1,0 +1,39 @@
+---
+import Flow from './Flow.astro';
+import { getApprovedProjects } from '../lib/content';
+import { projectFlows, STATUS } from '../lib/diagrams';
+const all = await getApprovedProjects();
+const lead = all.find((p) => p.data.slug === 'athena')!.data;
+const others = all.filter((p) => p.data.slug !== 'athena');
+const f = projectFlows['athena-gateway'];
+---
+<section class="sec hl-line" aria-labelledby="work-h">
+  <div class="wrap">
+    <p class="sec-label">Selected work</p>
+    <h2 id="work-h">Things I have built with LLMs</h2>
+    <div class="work-grid">
+      <article class="panel lead">
+        <div class="lead-copy">
+          <h3><a class="plain-link" href={`/projects/${lead.slug}/`}>{lead.name}: MCP gateway</a></h3>
+          <p class="tags"><span class="tag">{lead.workType}</span> <span class="tag tag-static">Private repository</span></p>
+          <p>{lead.oneLine}</p>
+          <p class="problem"><span class="label">The problem</span><br />{lead.problem}</p>
+          <p><a class="more" href={`/projects/${lead.slug}/`}>Read the project <span aria-hidden="true">→</span></a></p>
+        </div>
+        <Flow spec={f.spec} alt={f.alt} label="Illustrative architecture" id="home-athena" compact />
+      </article>
+      <div class="work-side">
+        <ul class="work-list">
+          {others.map((p) => (
+            <li>
+              <a class="wl-name" href={`/projects/${p.data.slug}/`}>{p.data.name}</a>
+              <span class="wl-one">{p.data.oneLine}</span>
+              <span class="wl-meta">{p.data.workType}{STATUS[p.data.status] !== p.data.workType ? ` · ${STATUS[p.data.status]}` : ''}</span>
+            </li>
+          ))}
+        </ul>
+        <p><a class="more" href="/projects/">View all projects <span aria-hidden="true">→</span></a></p>
+      </div>
+    </div>
+  </div>
+</section>

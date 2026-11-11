@@ -1,0 +1,19 @@
+---
+import Flow from './Flow.astro';
+import { getArchitecture } from '../lib/content';
+import { stagesFromLayers } from '../lib/flow';
+const a = (await getArchitecture()).find((x) => x.id === 'agentic-orchestration')!.data;
+---
+<section class="sec hl-line" aria-labelledby="arch-h">
+  <div class="wrap arch-grid">
+    <div class="arch-copy">
+      <p class="sec-label">Architecture</p>
+      <h2 id="arch-h">How I approach AI systems</h2>
+      <p>A model is one part of the system. Around it sit routing, a policy layer that checks each step, the tools and data it may use, and the records that let you review what happened.</p>
+      <p><a class="more" href="/architecture/">See the reference architectures <span aria-hidden="true">→</span></a></p>
+    </div>
+    <div class="panel arch-panel">
+      <Flow spec={stagesFromLayers(a.layers, 30)} alt={a.textAlternative} label="Reference architecture: how I approach this" id="home-arch" controls />
+    </div>
+  </div>
+</section>

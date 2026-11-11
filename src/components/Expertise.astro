@@ -1,0 +1,45 @@
+---
+import { getExpertise, getApprovedProjects } from '../lib/content';
+const domains = await getExpertise();
+const projects = await getApprovedProjects();
+const nameOf = (s: string) => projects.find((p) => p.data.slug === s)?.data.name ?? s;
+const open = domains.findIndex((d) => d.id === 'generative-agentic-ai');
+---
+<section class="sec hl-line" aria-labelledby="exp-h">
+  <div class="wrap">
+    <p class="sec-label">Expertise</p>
+    <h2 id="exp-h">Four areas I work in</h2>
+    <div class="exp" data-exp>
+      <ul class="exp-list">
+        {domains.map((d, i) => (
+          <li class="exp-row" data-open={i === open ? 'true' : 'false'} data-ex={d.data.exercisedIn.join(' ')}>
+            <h3>
+              <button type="button" class="exp-btn" id={`exp-b-${i}`} aria-expanded={i === open ? 'true' : 'false'} aria-controls={`exp-p-${i}`}>
+                <span class="exp-name">{d.data.title}</span>
+                <span class="exp-sum">{d.data.summary}</span>
+              </button>
+            </h3>
+            <div class="exp-panel" id={`exp-p-${i}`} role="region" aria-labelledby={`exp-b-${i}`}>
+              <div class="exp-in">
+                <p class="topics">{d.data.topics.join(' · ')}</p>
+                {d.data.exercisedIn.length > 0 && (
+                  <p class="exp-used"><span class="label">Exercised in</span>{' '}
+                    {d.data.exercisedIn.map((s, k) => <Fragment>{k > 0 && ', '}<a href={`/projects/${s}/`}>{nameOf(s)}</a></Fragment>)}
+                  </p>
+                )}
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <div class="exp-side" aria-hidden="true">
+        <p class="label">Projects</p>
+        <ul>
+          {projects.map((p) => <li data-p={p.data.slug}>{p.data.name}</li>)}
+        </ul>
+      </div>
+      <svg class="exp-lines" aria-hidden="true" focusable="false"></svg>
+    </div>
+  </div>
+</section>
+<script>import '../scripts/expertise';</script>

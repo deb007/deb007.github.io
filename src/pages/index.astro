@@ -2,8 +2,16 @@
 import Base from '../layouts/Base.astro';
 import { getProfile } from '../lib/content';
 import Hero from '../components/Hero.astro';
+import AboutTeaser from '../components/AboutTeaser.astro';
+import Expertise from '../components/Expertise.astro';
+import SelectedWork from '../components/SelectedWork.astro';
+import ArchTeaser from '../components/ArchTeaser.astro';
 const p = await getProfile();
 ---
 <Base title={`${p.name} | ${p.positioning}`} description={p.credentialLine}>
   <Hero />
+  <AboutTeaser />
+  <Expertise />
+  <SelectedWork />
+  <ArchTeaser />
 </Base>
