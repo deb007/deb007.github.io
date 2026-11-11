@@ -30,3 +30,28 @@ Status: foundation built and checked. Not pushed, not merged, not deployed.
 
 ### Next step
 Hero and motion stage (poster, canvas globe, bottom Earth, pause wiring and reduced-motion paths), after Deb has seen the foundation. Then page content, diagrams, screenshots, Lighthouse and axe. Vendor the fonts alongside.
+
+## Stage: Motion (branch `redesign-v2`)
+
+Status: hero, globe, bottom Earth, pause wiring and reduced-motion paths built and tested in the built site. Not pushed, not merged, not deployed.
+
+### Done
+- Natural Earth point data (`scripts/build-globe-data.mjs` -> `src/globe/points.json`), canvas 2D globe (`src/globe/globe.ts`), bottom Earth (`src/globe/earth.ts`), shared runner (`src/globe/shared.ts`), motion state (`src/scripts/motion.ts`), core script (`src/scripts/site.ts`).
+- Hero poster (`<picture>` AVIF then WebP, 504x360), line-masked headline, inner-page arc motif, hairlines, heading reveals, sliding nav indicator, closing border sweep, theme cross-fade.
+- `tests/motion.spec.ts` (14 tests) and `npm run test:motion`. Evidence in `~/projects/portfolio-rebuild/evidence/motion/`.
+
+### Decisions and deviations
+- `design-direction.md` lives outside this repo, which is outside my write surface. Source URLs, licence and the rendering choice are recorded in `docs/globe-data.md` instead; copy them across if wanted.
+- Playwright's default browser is missing; `playwright.config.ts` falls back to the cached `chromium_headless_shell-*` binary (or `PW_CHROMIUM`).
+- Added `pngjs` for pixel diffs in tests.
+- A shared `shared.js` chunk (6.6 KB gz) is split out and loaded by both lazy chunks, with no modulepreload.
+- Light poster fallback is the dark poster passed through a CSS filter; it is only seen if the canvas cannot start. A proper light poster is not made.
+- Hero `h1` size is reduced to `clamp(2.25rem, 4.4vw, 4rem)` so the four-line headline fits beside the globe.
+- The faint orbit line on the bottom Earth is a stroke (not political data).
+- Fonts are still fallbacks (unchanged).
+
+### Not verified
+Safari/Firefox, a real phone, 60 fps and 30 fps targets, Lighthouse, axe, AA contrast over the globe, the 20-30 s satellite crossing observed in a screenshot, bottom-Earth look in the light theme, pointer tilt on touch hardware.
+
+### Next step
+Page content, diagrams, copy, Lighthouse, axe, screenshots of every page in both themes, fonts.
