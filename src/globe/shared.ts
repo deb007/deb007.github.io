@@ -72,7 +72,7 @@ export interface Pal {
 const DARK: Pal = {
   bg: [0, 9, 23], disc0: [2, 14, 32], disc1: [8, 28, 56], land: [96, 150, 215], india: [232, 170, 90],
   city: [255, 205, 130], arc: [140, 190, 255], rim: [90, 160, 255], cloud: [150, 180, 220], star: [200, 220, 255],
-  landA: 0.78, cityA: 0.95, starA: 0.7, rimA: 0.55, glowA: 0.36, cloudA: 0.07,
+  landA: 0.78, cityA: 0.95, starA: 0.7, rimA: 0.7, glowA: 0.36, cloudA: 0.07,
 };
 const LIGHT: Pal = {
   bg: [246, 243, 236], disc0: [236, 231, 219], disc1: [243, 239, 229], land: [12, 26, 43], india: [168, 106, 32],
