@@ -9,5 +9,14 @@
     "LangGraph and orchestration",
     "MCP and tool integration",
     "Multi-agent architectures"
+  ],
+  "exercisedIn": [
+    "athena",
+    "prompt-runner",
+    "myinvs",
+    "pfdf",
+    "claudepilot",
+    "imagegen",
+    "omnitype"
   ]
 }

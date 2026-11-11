@@ -70,6 +70,7 @@ const expertise = defineCollection({
     order: z.number().int().positive(),
     summary: z.string().min(1),
     topics: z.array(z.string().min(1)).min(1),
+    exercisedIn: z.array(z.string()).default([]),
   }),
 });
 
@@ -79,6 +80,7 @@ const architecture = defineCollection({
     title: z.string().min(1),
     order: z.number().int().positive(),
     label: z.literal('Reference architecture: how I approach this'),
+    summary: z.string().min(1),
     layers: z.array(z.object({ name: z.string().min(1), note: z.string().min(1) })).min(2),
     textAlternative: z.string().min(1),
   }),

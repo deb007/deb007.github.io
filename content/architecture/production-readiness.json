@@ -1,0 +1,29 @@
+{
+  "title": "Production readiness and security",
+  "order": 4,
+  "label": "Reference architecture: how I approach this",
+  "summary": "A model-backed feature ships only after it is tested, secured and observable.",
+  "layers": [
+    {
+      "name": "Build",
+      "note": "Prompts, retrieval and tools versioned like any other code."
+    },
+    {
+      "name": "Test and evaluate",
+      "note": "Fixed test sets for answers, tool calls and failure cases."
+    },
+    {
+      "name": "Secure",
+      "note": "Secrets out of code, least-privilege access, input and output checks."
+    },
+    {
+      "name": "Release",
+      "note": "Staged rollout with a way back."
+    },
+    {
+      "name": "Operate",
+      "note": "Monitoring, cost and quality review after release."
+    }
+  ],
+  "textAlternative": "Five stages from left to right. Build, then test and evaluate, then secure, then release, then operate. Findings from operating feed back into build."
+}

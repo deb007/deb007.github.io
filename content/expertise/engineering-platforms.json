@@ -9,5 +9,14 @@
     "PostgreSQL and vector databases",
     "Docker and automation",
     "AI infrastructure and developer tooling"
+  ],
+  "exercisedIn": [
+    "athena",
+    "prompt-runner",
+    "myinvs",
+    "pfdf",
+    "claudepilot",
+    "imagegen",
+    "omnitype"
   ]
 }

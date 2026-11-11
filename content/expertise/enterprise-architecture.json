@@ -8,5 +8,11 @@
     "API and integration architecture",
     "Data and application architecture",
     "Security and scalability"
+  ],
+  "exercisedIn": [
+    "athena",
+    "myinvs",
+    "claudepilot",
+    "imagegen"
   ]
 }

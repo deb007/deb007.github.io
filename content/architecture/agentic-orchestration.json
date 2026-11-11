@@ -4,7 +4,7 @@
   "label": "Reference architecture: how I approach this",
   "layers": [
     {
-      "name": "Clients",
+      "name": "AI clients",
       "note": "Where requests enter: assistants, workflows and applications."
     },
     {
@@ -24,5 +24,6 @@
       "note": "Traces and logs for every request, so behaviour can be reviewed."
     }
   ],
-  "textAlternative": "Five layers from top to bottom. Clients send requests to an orchestration layer. A governance and guardrails layer checks each step. Approved steps reach tools and data. An observability layer records every request across all layers."
+  "textAlternative": "Five layers from top to bottom. Clients send requests to an orchestration layer. A governance and guardrails layer checks each step. Approved steps reach tools and data. An observability layer records every request across all layers.",
+  "summary": "Every request passes a policy layer before it reaches a tool, and every step is recorded."
 }

@@ -1,0 +1,25 @@
+{
+  "title": "MCP integration layer",
+  "order": 3,
+  "label": "Reference architecture: how I approach this",
+  "summary": "One gateway gives every assistant the same tool surface, with one adapter per service.",
+  "layers": [
+    {
+      "name": "MCP clients",
+      "note": "Assistants and workflow tools that speak the protocol."
+    },
+    {
+      "name": "Gateway",
+      "note": "A single entry point that lists tools and routes each call."
+    },
+    {
+      "name": "Adapters",
+      "note": "One adapter per service, so adding a service does not touch the others."
+    },
+    {
+      "name": "Services",
+      "note": "The systems the adapters talk to, each behind its own credentials."
+    }
+  ],
+  "textAlternative": "Four stages from left to right. MCP clients call a gateway. The gateway routes each call to an adapter. Each adapter talks to one service."
+}

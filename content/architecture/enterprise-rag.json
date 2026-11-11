@@ -24,5 +24,6 @@
       "note": "Checks answers against the sources."
     }
   ],
-  "textAlternative": "Five stages from left to right. Sources are ingested and indexed. Retrieval finds relevant passages for a question. Generation answers from those passages. Evaluation checks the answers against the sources."
+  "textAlternative": "Five stages from left to right. Sources are ingested and indexed. Retrieval finds relevant passages for a question. Generation answers from those passages. Evaluation checks the answers against the sources.",
+  "summary": "Answers come from retrieved passages, and are checked against the sources they cite."
 }
