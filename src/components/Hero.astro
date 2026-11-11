@@ -17,7 +17,11 @@ const accent = 'into Production.';
         ))}
       </h1>
       <p class="hr" style="--d:0.35s">{p.credentialLine}</p>
-      <p class="hr" style="--d:0.45s"><a class="btn" href="/projects/">Explore my work</a></p>
+      <p class="hr signal" style="--d:0.4s">{p.builderSignal}</p>
+      <p class="hr hero-actions" style="--d:0.5s">
+        <a class="btn" href="/projects/">Explore my work</a>
+        <a class="quiet" href="/contact/" data-open="linkedin" data-shards={JSON.stringify(p.contact.linkedin)}>LinkedIn</a>
+      </p>
     </div>
     <div class="hero-visual" id="hero-visual">
       <picture>
@@ -28,3 +32,14 @@ const accent = 'into Production.';
     </div>
   </div>
 </section>
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('[data-open="linkedin"]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      try {
+        const url = atob(JSON.parse(a.dataset.shards!).join(''));
+        e.preventDefault();
+        window.open(url, '_blank', 'noopener');
+      } catch { /* falls through to /contact/ */ }
+    });
+  });
+</script>
