@@ -5,8 +5,8 @@ export const still = (): boolean =>
   reduceMQ.matches || document.documentElement.dataset.motion === 'paused';
 
 export const isLight = (): boolean => {
-  const t = document.documentElement.dataset.theme;
-  return t ? t === 'light' : matchMedia('(prefers-color-scheme: light)').matches;
+  // Dark is the default; light only when the visitor chose it.
+  return document.documentElement.dataset.theme === 'light';
 };
 
 export function onMotionChange(cb: () => void): void {
@@ -16,5 +16,4 @@ export function onMotionChange(cb: () => void): void {
 
 export function onThemeChange(cb: () => void): void {
   document.addEventListener('themechange', cb);
-  matchMedia('(prefers-color-scheme: light)').addEventListener('change', cb);
 }
