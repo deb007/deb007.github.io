@@ -55,3 +55,29 @@ Safari/Firefox, a real phone, 60 fps and 30 fps targets, Lighthouse, axe, AA con
 
 ### Next step
 Page content, diagrams, copy, Lighthouse, axe, screenshots of every page in both themes, fonts.
+
+## Stage: Content (branch `redesign-v2`)
+
+Status: all Home sections, About, Projects, seven project pages, Architecture (four diagrams), Contact, fonts, `COPY.md` and `CHANGES.md` built and measured. Not pushed, not merged, not deployed.
+
+### Done
+- Fonts: Fraunces, Inter (variable) and JetBrains Mono 400 vendored as Latin WOFF2 in `public/fonts/` (106,044 bytes total) with OFL licences. Two preloaded (Fraunces, Inter). `docs/fonts-todo.md` removed.
+- Dark by default: pre-paint script sets `data-theme` to `dark` unless the visitor chose light; OS preference no longer read.
+- Home: hero builder-signal line and quiet LinkedIn link; About teaser with three-layer visual; Expertise accordion with connector lines; Selected work (Athena lead panel with flow diagram, six-project list); Architecture teaser with play/pause; richer closing band and bottom Earth.
+- Pages: About, Projects (lead, featured, filterable library), seven project pages with per-project diagrams and synthetic charts (MyInvs, PFDF), Architecture (four references, notes, play/pause), Contact.
+- Tooling: `npm run measure | contrast | links | screenshots`; the privacy scan now also fails on Google font hosts, banned phrases, undocumented Athena clients.
+- Tests: 7 new motion tests (21 total).
+
+### Decisions and deviations
+- The brief names `src/globe/earth.ts` as editable only for the richer Earth; `globe.ts` is untouched. I also raised `rimA` in `shared.ts` (shared palette) for the stronger rim; it affects the hero globe's rim glow slightly. Flag if Deb wants that reverted.
+- Narrow containers swap the diagram SVG for a stacked text list so labels stay 13px+; chart labels are enlarged below 520px for the same reason.
+- Where work type equals status (Prototype) the status tag is dropped.
+- "Insights" PFDF diagram node renamed so the hidden-section scan stays clean.
+- Page headings and closing line are my choices; alternatives are in `COPY.md`.
+- `docs/design-direction.md` is outside the repo (as in the Motion stage) and not edited.
+
+### Not verified
+Safari/Firefox, real phone, fps, Lighthouse, axe (not run), keyboard walk of every page by hand, light-theme look of every page by eye (screenshots exist, only some viewed), pointer-hover on touch.
+
+### Next step
+Deb chooses headings from `COPY.md`; Nyx reviews and pushes. Then Lighthouse, axe, cross-browser.
