@@ -1,7 +1,10 @@
 name: Deploy preview to GitHub Pages
 
-# Manual only. Deploys the branch it is run from. Nothing here runs on push.
+# Preview deploy. Runs only for pushes to redesign-v2 (and manually).
+# Remove or retarget this before merging to master.
 on:
+  push:
+    branches: [redesign-v2]
   workflow_dispatch:
 
 permissions:
