@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import { getProfile } from '../lib/content';
+import { flags } from '../config/flags';
+const p = await getProfile();
+---
+<Base title={`Contact | ${p.name}`} description={`Contact ${p.name}.`}>
+  <div class="page"><div class="wrap">
+    <h1>Contact</h1>
+    <ul>
+      {flags.linkedin && <li><button class="ctl" type="button" data-reveal="linkedin" data-shards={JSON.stringify(p.contact.linkedin)}>Show LinkedIn</button></li>}
+      <li><a href={p.githubProfile}>GitHub profile</a></li>
+      {flags.email && <li><button class="ctl" type="button" data-reveal="email" data-shards={JSON.stringify(p.contact.email)}>Show email</button></li>}
+    </ul>
+    <p id="reveal-out" aria-live="polite"></p>
+  </div></div>
+  <script is:inline>
+    document.querySelectorAll('[data-reveal]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var v = atob(JSON.parse(b.dataset.shards).join(''));
+        var a = document.createElement('a');
+        a.href = b.dataset.reveal === 'email' ? 'mailto:' + v : v;
+        a.textContent = v;
+        b.replaceWith(a);
+      });
+    });
+  </script>
+</Base>

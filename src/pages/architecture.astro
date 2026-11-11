@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import { getArchitecture, getProfile } from '../lib/content';
+const p = await getProfile();
+const items = await getArchitecture();
+---
+<Base title={`Architecture | ${p.name}`} description="Reference architectures.">
+  <div class="page"><div class="wrap">
+    <h1>Architecture</h1>
+    {items.map((a) => (
+      <section>
+        <h2>{a.data.title}</h2>
+        <p class="label">{a.data.label}</p>
+        <ol>{a.data.layers.map((l) => <li><strong>{l.name}</strong>: {l.note}</li>)}</ol>
+        <p>{a.data.textAlternative}</p>
+      </section>
+    ))}
+  </div></div>
+</Base>

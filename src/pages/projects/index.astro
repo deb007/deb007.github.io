@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getApprovedProjects, getProfile } from '../../lib/content';
+const p = await getProfile();
+const projects = await getApprovedProjects();
+---
+<Base title={`Projects | ${p.name}`} description="Projects built with LLMs.">
+  <div class="page"><div class="wrap">
+    <h1>Projects</h1>
+    {projects.map((x) => (
+      <article>
+        <h2><a href={`/projects/${x.data.slug}/`}>{x.data.name}</a></h2>
+        <p>{x.data.oneLine}</p>
+        <p>
+          <span class="tag">{x.data.workType}</span>
+          {x.data.visibility === 'private' && <span class="tag">Private repository</span>}
+        </p>
+      </article>
+    ))}
+  </div></div>
+</Base>

@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import { getProfile } from '../lib/content';
+const p = await getProfile();
+---
+<Base title={`${p.name} | ${p.positioning}`} description={p.credentialLine}>
+  <div class="page"><div class="wrap">
+    <p class="label">{p.positioning}</p>
+    <h1>{p.headline}</h1>
+    <p>{p.credentialLine}</p>
+    <p class="label">{p.builderSignal}</p>
+    <p><a href="/projects/">Explore my work</a></p>
+  </div></div>
+</Base>

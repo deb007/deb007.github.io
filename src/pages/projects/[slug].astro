@@ -1,0 +1,29 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getApprovedProjects, getProfile } from '../../lib/content';
+
+export async function getStaticPaths() {
+  // Only approved projects get a page: the approval gate in code.
+  return (await getApprovedProjects()).map((p) => ({ params: { slug: p.data.slug }, props: { p: p.data } }));
+}
+const { p } = Astro.props;
+const prof = await getProfile();
+---
+<Base title={`${p.name} | ${prof.name}`} description={p.oneLine}>
+  <div class="page"><div class="wrap">
+    <h1>{p.name}</h1>
+    <p>{p.oneLine}</p>
+    <p>
+      <span class="tag">{p.workType}</span>
+      {p.visibility === 'private' && <span class="tag">Private repository</span>}
+      <span class="tag">{p.status}</span>
+      {p.aiAssisted && <span class="tag">AI-assisted build</span>}
+    </p>
+    <h2>Problem</h2><p>{p.problem}</p>
+    <h2>What I built</h2><p>{p.built}</p>
+    <h2>Engineering decisions</h2>
+    <ul>{p.decisions.map((d) => <li>{d}</li>)}</ul>
+    <p class="stack-text">{p.stack.join(' · ')}</p>
+    {p.visibility === 'public' && p.repoPublic && <p><a href={p.repoPublic}>Public repository</a></p>}
+  </div></div>
+</Base>
