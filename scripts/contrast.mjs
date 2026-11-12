@@ -9,12 +9,15 @@ const mix = (a, b, p) => '#' + [1, 3, 5].map((i) => Math.round(parseInt(a.slice(
 let fail = 0;
 function check(name, fg, bg, min) { const r = ratio(fg, bg); const ok = r >= min; if (!ok) fail++; console.log(`${ok ? 'PASS' : 'FAIL'} ${r.toFixed(2).padStart(5)}:1 (need ${min})  ${name}  ${fg} on ${bg}`); }
 for (const [n, t] of [['dark', dark], ['light', light]]) {
-  const panel = mix(t.accent, t.bg, 0.1), panelS = mix(t.surface, t.bg, 0.7), layer = mix(t.accent, t.bg, 0.14);
+  const panel = mix(t.accent, t.bg, 0.1), panelS = t.surface, layer = mix(t.accent, t.bg, 0.14);
   console.log(`-- ${n}`);
   check('body text on page', t.text, t.bg, 4.5);
   check('muted text on page', t['text-muted'], t.bg, 4.5);
   check('muted text on panel', t['text-muted'], panelS, 4.5);
   check('body text on panel', t.text, panelS, 4.5);
+  check('expertise inactive titles (--text-muted) on --surface panel', t['text-muted'], panelS, 4.5);
+  check('mono labels / tags / metadata (--text-muted) on page', t['text-muted'], t.bg, 4.5);
+  check('status label (accent text) on page', t['accent-text'], t.bg, 4.5);
   check('muted text on three-layer row (darkest tint)', t['text-muted'], layer, 4.5);
   check('accent text on page (labels, links)', t['accent-text'], t.bg, 4.5);
   check('accent text on panel', t['accent-text'], panelS, 4.5);
