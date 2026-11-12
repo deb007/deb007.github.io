@@ -13,7 +13,7 @@ const a = (await getArchitecture()).find((x) => x.id === 'agentic-orchestration'
       <p><a class="more" href="/architecture/">See the reference architectures <span aria-hidden="true">→</span></a></p>
     </div>
     <div class="panel arch-panel">
-      <Flow spec={stagesFromLayers(a.layers, 30)} alt={a.textAlternative} label="Reference architecture: how I approach this" id="home-arch" controls />
+      <Flow spec={stagesFromLayers(a.layers, 24)} alt={a.textAlternative} label="Reference architecture: how I approach this" id="home-arch" controls fill />
     </div>
   </div>
 </section>

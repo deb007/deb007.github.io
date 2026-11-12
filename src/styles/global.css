@@ -176,7 +176,6 @@ p { max-width: var(--measure); }
 .exp-name { font-family: var(--font-display); font-size: clamp(1.6rem, 3.4vw, 2.6rem); line-height: 1.1; transition: color 0.25s; color: var(--text-muted); }
 .exp-sum { color: var(--text-muted); max-width: 52ch; }
 .exp-row[data-open='true'] .exp-name, .exp-btn:hover .exp-name { color: var(--text); }
-.exp-row[data-open='true'] .exp-name::after { content: ''; display: inline-block; width: 28px; height: 2px; background: var(--accent); vertical-align: middle; margin-left: var(--space-4); }
 .exp-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.35s ease; }
 .exp-row[data-open='true'] .exp-panel { grid-template-rows: 1fr; }
 .exp-in { overflow: hidden; min-height: 0; }
@@ -384,3 +383,83 @@ html[data-motion='paused'].js .arch-item .flow-note { display: none; }
 .sec { padding-block: 56px; }
 .band { padding-block: 56px; }
 @media (max-width: 640px) { .sec, .band { padding-block: 48px; } }
+
+
+/* ================= Polish pass ================= */
+/* 15: labels are 13px at every width (token is 0.8125rem = 13px). */
+:root { --size-label: 0.8125rem; }
+
+/* 1-3 Hero: wider visual column bleeding to the right edge; 112px to the next section. */
+.hero { padding-block: var(--space-7) 53px; overflow: hidden; }
+.hero-grid { align-items: center; }
+@media (min-width: 900px) {
+  .hero-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-5); }
+  .hero-visual { width: calc(100% + max(var(--space-5), (100vw - var(--content-max)) / 2 + var(--space-5))); border-radius: 0; }
+}
+.hero-visual { background: transparent; }
+.hero-copy > .signal { order: 0; }
+.hero-copy { display: flex; flex-direction: column; }
+.hero-copy > .signal { margin: var(--space-5) 0 0; }
+.hero-copy > .hero-actions { margin-top: var(--space-3) !important; }
+.sec-label.signal, .signal { color: var(--accent-text); letter-spacing: 0.12em; text-transform: uppercase; }
+.signal::before { height: 2px; }
+
+/* 10 Panels */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.arch-panel .flow-head, .flow-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-3); }
+.flow-head .flow-label { margin: 0; }
+
+/* 4-6 Expertise: one panel; list full width, fan beside it. */
+.exp-card { padding: var(--space-6) var(--space-6); }
+.exp-list { border-top: 0; }
+.exp-row:last-child { border-bottom: 0; }
+.exp-name { color: var(--text-muted); }
+.exp-row[data-open='true'] .exp-name, .exp-btn:hover .exp-name, .exp-btn:focus-visible .exp-name { color: var(--text); }
+@media (min-width: 1000px) {
+  .exp { grid-template-columns: minmax(0, 1fr) 190px; gap: 112px; }
+}
+@media (max-width: 640px) { .exp-card { padding: var(--space-4) var(--space-5); } }
+
+/* 7-9 Athena panel and project list */
+.flow-fill .flow-wide { max-width: none; }
+.flow-fill .fl-edge { stroke: color-mix(in srgb, var(--accent-text) 70%, transparent); stroke-width: 1.75; }
+.flow-fill .fl-arrow { fill: color-mix(in srgb, var(--accent-text) 85%, transparent); }
+.flow-fill .fl-node text { font-size: 15px; }
+.flow-cap { text-align: right; margin: var(--space-3) 0 0; }
+@media (min-width: 1000px) {
+  .lead { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: var(--space-5); align-items: center; align-content: center; }
+}
+.lead { padding: var(--space-6) var(--space-5); }
+.work-list li { display: grid; gap: var(--space-1); padding: var(--space-4) 0; border-top: 1px solid var(--line); }
+.work-list li:first-child { border-top: 1px solid var(--line); padding-top: var(--space-4); }
+.work-list li:last-child { border-bottom: 1px solid var(--line); }
+.wl-meta { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.wl-type { color: var(--text-muted); }
+.wl-status { color: var(--accent-text); }
+.wl-status::before { content: '· '; color: var(--text-muted); }
+
+/* 11 Architecture teaser */
+.arch-panel { padding: var(--space-5) var(--space-6); }
+.flow-fill .flow-foot { margin-top: var(--space-3); }
+.flow-head .flow-ctl { flex: none; }
+.flow-ctl { padding: var(--space-2) var(--space-4); }
+.flow-ctl:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+
+/* 12 Closing button matches hero primary */
+.closing .btn { padding: var(--space-3) var(--space-5); font-size: var(--size-body); font-weight: 500; }
+
+/* 14 Header at phone widths */
+@media (max-width: 640px) {
+  .site-header .wrap { gap: var(--space-2) var(--space-3); }
+  .site-header .brand { flex: 1 0 100%; }
+  .site-header .wrap { padding-block: var(--space-3); }
+  .site-header nav { flex: 1 0 100%; order: 2; gap: var(--space-2) 10px; margin-right: 0; justify-content: space-between; font-size: 0.875rem; }
+  .site-header nav a { padding-block: var(--space-2); }
+  #theme-toggle, #motion-toggle { order: 3; }
+  #motion-toggle { margin-left: auto; }
+}
+
+/* Polish follow-ups */
+.flow .flow-cap { text-align: right; max-width: none; }
+@media (min-width: 900px) { .hero-visual { aspect-ratio: 759 / 596; } }
+@media (min-width: 1000px) { .work-grid { align-items: start; } .lead { align-content: center; } }

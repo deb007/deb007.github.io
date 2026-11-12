@@ -20,7 +20,7 @@ const f = projectFlows['athena-gateway'];
           <p class="problem"><span class="label">The problem</span><br />{lead.problem}</p>
           <p><a class="more" href={`/projects/${lead.slug}/`}>Read the project <span aria-hidden="true">→</span></a></p>
         </div>
-        <Flow spec={f.spec} alt={f.alt} label="Illustrative architecture" id="home-athena" compact />
+        <Flow spec={{ ...f.spec, gap: 28 }} alt={f.alt} label="Illustrative architecture" id="home-athena" compact fill />
       </article>
       <div class="work-side">
         <ul class="work-list">
@@ -28,7 +28,7 @@ const f = projectFlows['athena-gateway'];
             <li>
               <a class="wl-name" href={`/projects/${p.data.slug}/`}>{p.data.name}</a>
               <span class="wl-one">{p.data.oneLine}</span>
-              <span class="wl-meta">{p.data.workType}{STATUS[p.data.status] !== p.data.workType ? ` · ${STATUS[p.data.status]}` : ''}</span>
+              <span class="wl-meta"><span class="wl-type">{p.data.workType}</span>{STATUS[p.data.status] !== p.data.workType && <span class="wl-status">{STATUS[p.data.status]}</span>}</span>
             </li>
           ))}
         </ul>

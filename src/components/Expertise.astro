@@ -9,6 +9,7 @@ const open = domains.findIndex((d) => d.id === 'generative-agentic-ai');
   <div class="wrap">
     <p class="sec-label">Expertise</p>
     <h2 id="exp-h">Four areas I work in</h2>
+    <div class="panel exp-card">
     <div class="exp" data-exp>
       <ul class="exp-list">
         {domains.map((d, i) => (
@@ -39,6 +40,7 @@ const open = domains.findIndex((d) => d.id === 'generative-agentic-ai');
         </ul>
       </div>
       <svg class="exp-lines" aria-hidden="true" focusable="false"></svg>
+    </div>
     </div>
   </div>
 </section>

@@ -4,15 +4,20 @@
 import { layout, type FlowSpec } from '../lib/flow';
 interface Props {
   spec: FlowSpec; label: string; alt: string; id: string;
-  controls?: boolean; notes?: { name: string; note: string }[]; compact?: boolean;
+  controls?: boolean; notes?: { name: string; note: string }[]; compact?: boolean; fill?: boolean;
 }
-const { spec, label, alt, id, controls = false, notes, compact = false } = Astro.props;
+const { spec, label, alt, id, controls = false, notes, compact = false, fill = false } = Astro.props;
 const g = layout(spec);
 const vwNum = g.w;
 const stageOf = (s: number) => g.nodes.filter((n) => n.stage === s);
 ---
-<figure class:list={['flow', compact && 'flow-compact']} data-flow data-w={g.w} style={`--vw:${g.w}px`}>
-  <p class="label flow-label">{label}</p>
+<figure class:list={['flow', compact && 'flow-compact', fill && 'flow-fill']} data-flow data-w={g.w} style={`--vw:${g.w}px`}>
+  {!compact && (
+    <div class="flow-head">
+      <p class="label flow-label">{label}</p>
+      {controls && <button class="ctl flow-ctl" type="button" aria-pressed="false" data-flow-ctl>Pause flow</button>}
+    </div>
+  )}
   <div class="flow-box">
     <svg class="flow-wide" viewBox={`0 0 ${g.w} ${g.h}`} width={g.w} height={g.h} role="group" aria-label={`${label}. ${alt}`}>
       <defs>
@@ -39,10 +44,10 @@ const stageOf = (s: number) => g.nodes.filter((n) => n.stage === s);
       ))}
     </ol>
   </div>
+  {compact && <p class="label flow-label flow-cap">{label}</p>}
   {notes && <p class="flow-note" data-note-bar aria-live="polite">Hover or focus a stage to read its design note.</p>}
   <div class="flow-foot">
     <p class="flow-alt"><span class="vh">Text alternative: </span>{alt}</p>
-    {controls && <button class="ctl flow-ctl" type="button" aria-pressed="false" data-flow-ctl>Pause flow</button>}
   </div>
   {notes && (
     <ul class="flow-notes">
