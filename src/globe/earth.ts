@@ -8,7 +8,7 @@ const SAT_PERIOD = 25;
 export function startEarth(canvas: HTMLCanvasElement): boolean {
   const small = matchMedia('(max-width: 640px), (pointer: coarse)').matches;
   const land = landPoints(small ? 3 : 2);
-  const city = cityPoints(3.2, 21);
+  const cities = [cityPoints(3.2, 21), cityPoints(7, 33)];  // second, wider scatter: denser night lights
   const clouds = Array.from({ length: 7 }, (_, i) => ({ x: i / 7, y: 0.05 + ((i * 37) % 10) / 40, w: 0.18 + ((i * 13) % 7) / 40, s: 0.004 + (i % 3) * 0.002 }));
 
   return run(canvas, {
@@ -29,8 +29,8 @@ export function startEarth(canvas: HTMLCanvasElement): boolean {
       const dark = P.bg[0] < 128;
       ctx.globalCompositeOperation = dark ? 'lighter' : 'source-over';
       const sh = stat ? 1 : 1 + 0.1 * Math.sin(t * 0.8);
-      const halo = ctx.createRadialGradient(cx, ccy, R * 0.9, cx, ccy, R * 1.12);
-      halo.addColorStop(0, rgba(P.rim, 0)); halo.addColorStop(0.3, rgba(P.rim, P.rimA * 0.12)); halo.addColorStop(0.45, rgba(P.rim, P.rimA * 0.34 * sh)); halo.addColorStop(0.6, rgba(P.rim, P.rimA * 0.12)); halo.addColorStop(1, rgba(P.rim, 0));
+      const halo = ctx.createRadialGradient(cx, ccy, R * 0.86, cx, ccy, R * 1.16);
+      halo.addColorStop(0, rgba(P.rim, 0)); halo.addColorStop(0.3, rgba(P.rim, P.rimA * 0.22)); halo.addColorStop(0.45, rgba(P.rim, Math.min(1, P.rimA * 0.62 * sh))); halo.addColorStop(0.6, rgba(P.rim, P.rimA * 0.22)); halo.addColorStop(1, rgba(P.rim, 0));
       ctx.fillStyle = halo; ctx.fillRect(0, 0, W, H);
       const rg = ctx.createRadialGradient(cx, ccy, R * 0.99, cx, ccy, R * 1.012);
       rg.addColorStop(0, rgba(P.rim, 0)); rg.addColorStop(0.45, rgba(P.rim, Math.min(1, P.rimA * 1.7 * sh))); rg.addColorStop(1, rgba(P.rim, 0));
@@ -48,13 +48,13 @@ export function startEarth(canvas: HTMLCanvasElement): boolean {
       ctx.fillStyle = rgba(P.land, P.landA * 0.55); ctx.fill(lp);
       ctx.fillStyle = rgba(P.land, P.landA * 0.3); ctx.fill(lp2);
       const cps: Path2D[] = [new Path2D(), new Path2D(), new Path2D()];
-      for (let i = 0; i < city.n; i++) {
+      for (const city of cities) for (let i = 0; i < city.n; i++) {
         const x = city.xyz[i * 3], y = city.xyz[i * 3 + 1], z = city.xyz[i * 3 + 2];
         if (x * B[6] + y * B[7] + z * B[8] < 0.05) continue;
         const sx = cx + R * (x * B[0] + y * B[1]), sy = ccy - R * (x * B[3] + y * B[4] + z * B[5]);
         if (sy < apex - 4 || sy > H + 4 || sx < 0 || sx > W) continue;
         const tw = stat ? 0.8 : 0.5 + 0.5 * Math.sin(t * city.sp[i] * 0.7 + city.ph[i]);
-        cps[Math.min(2, (tw * 3) | 0)].rect(sx - 1.1, sy - 1.1, 2.4, 2.4);
+        cps[Math.min(2, (tw * 3) | 0)].rect(sx - 1.4, sy - 1.4, 2.9, 2.9);
       }
       for (let l = 0; l < 3; l++) { ctx.fillStyle = rgba(P.city, P.cityA * (0.4 + l * 0.3)); ctx.fill(cps[l]); }
       ctx.globalCompositeOperation = 'source-over';
