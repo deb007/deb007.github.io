@@ -81,3 +81,18 @@ Safari/Firefox, real phone, fps, Lighthouse, axe (not run), keyboard walk of eve
 
 ### Next step
 Deb chooses headings from `COPY.md`; Nyx reviews and pushes. Then Lighthouse, axe, cross-browser.
+
+## Stage: Polish
+
+Short visual pass on `redesign-v2` (items 1-15 of `brief-polish.md`). Nothing pushed, merged or deployed. `globe.ts` untouched; `earth.ts` changed in decoration parameters only (halo strength, second city-light scatter).
+
+- Hero: visual column widened (5fr/6fr) and bleeds to x=1440; poster 504x360 and CLS=0 kept. CTA to next section content = 112px (measured). "multiple LLM projects built" restyled as an eyebrow-style mono label above the CTA, wording unchanged.
+- Expertise: one `--surface` panel, 1px `--line`, 14px radius; list uses the full width with the fan beside it; inactive titles use `--text-muted` (8.97:1 on surface dark, 5.92:1 light). Stray dash was the `.exp-name::after` accent bar on the open row; removed.
+- Athena panel: flow fills the diagram column (451px wide at 1440, labels 14.8px effective), edges 1.75px at 70% accent, caption "Illustrative architecture" bottom-right. Project rows: name, one line, mono type and status, hairlines.
+- Architecture teaser: diagram fills the panel (670px), Pause flow moved into the header row, top-right, focus ring and name kept.
+- Closing button now matches hero button (12px/24px padding, 16px). Header at 360: nav row, then the two controls in one row.
+- `--size-label` is 13px at all widths (min computed label size 13px).
+- Contrast script: panel pairs now use solid `--surface`; added expertise-title, label and status checks.
+
+### Not verified
+Safari/Firefox, real phone, other pages re-reviewed by eye, Lighthouse, axe.
